@@ -1,0 +1,7 @@
+(ql:quickload :oejsc)
+(in-package :oejsc)
+(ql:quickload :parse-js)
+(use-package :parse-js)
+// choose a file
+(oejsc "variables.js")
+(setptree (parse-js *code*))
