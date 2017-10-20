@@ -1,0 +1,79 @@
+*** C code
+int main(){}
+
+*** wat code
+
+(module
+  (table 0 anyfunc)
+  (memory $0 1)
+  (export "memory" (memory $0))
+  (export "main" (func $main))
+  (func $main (result i32)
+    (i32.const 0)
+  )
+)
+
+*** construção do wat
+* primeiro é necessário criar o module, ele funciona como raiz.
+
+(module)
+
+* com o modulo criado, cria-se uma tabela, nela serão armazenados os valor dos parametros e resultados das funções
+
+
+(module 
+	(table 0 anyfunc)   * a tabela é criada com o comando table, 0 indica o tamanho inicial da tabela. anyfunc é o tipo suportado. anyfunc são funções sem assinatura
+) 
+
+* a tabela agora é um no de module
+
+* alloca a tabela pelo comando memory
+* o identificar o qual deve ser alocado
+
+(module 
+	(table 0 anyfunc)
+	(memory $0 1)   * memory define que o comando deve alocar memoria, $0 define quem deve ser alocado, no caso 0 pertence a table. 1 define que a memoria deve conter ao menos uma página, a pagina tem tamanho 64KB
+)
+
+* Como as funções seram invocadas pelo JavaScript, é necessário exporta-las.
+
+(module 
+	(table 0 anyfunc)
+	(memory $0 1)
+	(export "memory" (memory $0))  * exporta a função de alocação de memória
+	(export "main" (func $main))   * exporta a função de main
+) 
+
+* define a função main
+
+(module
+  (table 0 anyfunc)
+  (memory $0 1)
+  (export "memory" (memory $0))
+  (export "main" (func $main))
+  (func $main (result i32) * a função com nome $main possui um retorno do tipo inteiro
+    (i32.const 0) * retorna um inteiro constante no caso 0
+  )
+)
+
+*****************************************************************************************
+
+(module
+  (table 0 anyfunc)
+  (memory $0 1)
+  (export "memory" (memory $0))
+  (export "_Z3addii" (func $_Z3addii))
+  (export "main" (func $main))
+  (func $_Z3addii (param $0 i32) (param $1 i32) (result i32)
+    (i32.add                      * chamado do metodo add
+      (get_local $1)
+      (get_local $0)
+    )
+  )
+  (func $main (result i32)
+    (call $_Z3addii               * chamad de função
+      (i32.const 1)
+      (i32.const 2)
+    )
+  )
+)

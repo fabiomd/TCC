@@ -1,0 +1,1 @@
+https://developer.mozilla.org/pt-BR/docs/WebAssembly/Entendendo_o_formato_textual_do_WebAssembly
