@@ -1,0 +1,7 @@
+(in-package #:wao)
+(defvar *original-file-path*  nil "path to original file")
+(defvar *original*            nil "original software")
+(defvar *fitness-shell-path*  nil "path to fitness shell")
+(defvar *population*          nil "population for evolution")
+(defvar *max-population-size* nil "max population allowed")
+(defvar *fitness-predicate*   nil "pitness predicate can receive < or >")
