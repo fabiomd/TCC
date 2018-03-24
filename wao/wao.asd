@@ -8,5 +8,6 @@
   :components ((:file "package")
                (:file "globals")
                (:file "utils")
-			   (:file "wao-core" :depends-on ("package" "globals" "utils"))
+               (:file "software-evolution-adapter")
+			   (:file "wao-core" :depends-on ("package" "globals" "utils" "software-evolution-adapter"))
                (:file "wao"      :depends-on ("package" "wao-core"))))

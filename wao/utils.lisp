@@ -13,15 +13,6 @@
 		)
 )
 
-;; FUNCTION TO WALK ON GENOME
-(defun get-genome-at-position (pos wasm-p)
-	(nth pos (wasm-perf-genome wasm-p))
-)
-
-;; SINZE WAT FILE WILL BE RETURNED AS A LIST, THIS FUNCTION TURNS IT INTO A SINGLE STRING
-(defun concatenate-list( list )
-  (format nil "~{~a~}" list))
-
 ;; REDEFINITION OF FROM-FILE
 (defun get-wat-file (wat-filename)
   (with-open-file (stream wat-filename)
@@ -71,8 +62,7 @@
 						  (setf fitness (+ fitness (parse-integer(caddr temp))))))
 					)
 				)
-		(block nil (return (list fitness test-table))))))
-)
+		(block nil (return (list fitness test-table)))))))
 
 ; #MUTATE METHODS
 
@@ -103,5 +93,15 @@
 
 (defun get-node (node)
 	(if listp node)
-	(if (or (equal (length node) 1) (< (random 100) 30)) node (get-node (nth (random (length node)) node)))
+	(if (or (equal (length node) 1) (< (random 100) 30)) 
+		node 
+		(get-node (nth (random (length node)) node))
 	)
+)
+
+; (defmethod copy ((webassembly webassembly-software))
+;   (with-slots (fitness testsuite genome) webassembly
+;     (make-instance (type-of webassembly)
+;       :fitness fitness
+;       :testsuite testsuite
+;       :genome genome)))
