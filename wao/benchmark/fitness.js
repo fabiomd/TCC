@@ -3,36 +3,6 @@ const fs = require( 'fs' ),
 	  arrayBuffer = new Uint8Array( buffer ).buffer,
       async = require('async');
 
-// var addInstance;
-
-// WebAssembly.compile( arrayBuffer ).then( module => {
-//     let imports = {
-//     	env : {
-// 	    	memoryBase : 0,
-// 	    	tableBase : 0
-// 	    }
-//     };
-
-//     if( !imports.env.memory )
-//         imports.env.memory = new WebAssembly.Memory({
-//             initial: 256
-//         });
-
-//     if( !imports.env.table )
-//         imports.env.table = new WebAssembly.Table({
-//             initial: 0,
-//             element: 'anyfunc'
-//         });
-
-//     instance = new WebAssembly.Instance(module, imports);
-//     console.log("add : "+instance.exports.sumtwo(1,2)+ " : " + 3);
-// });
-
-// process.argv.forEach(function (val, index, array) {
-//   console.log(index + ': ' + val);
-// });
-
-
 // create all instances
 async.parallel({
     sumtwo: function(parallelCb) {

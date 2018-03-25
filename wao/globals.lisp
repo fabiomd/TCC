@@ -5,3 +5,4 @@
 (defvar *population*          nil "population for evolution")
 (defvar *max-population-size* nil "max population allowed")
 (defvar *fitness-predicate*   nil "pitness predicate can receive < or >")
+(defvar *current-step* 0 "current step")
