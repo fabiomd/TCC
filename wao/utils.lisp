@@ -13,12 +13,12 @@
 		)
 )
 
-;; READ A WAT FILE
-(defun get-wat-file (wat-filename)
-  (with-open-file (stream wat-filename)
-    (loop for line = (read-line stream nil)
-          while line
-          collect line)))
+; ;; READ A WAT FILE
+; (defun get-wat-file (wat-filename)
+;   (with-open-file (stream wat-filename)
+;     (loop for line = (read-line stream nil)
+;           while line
+;           collect line)))
 
 ; READ S-EXPRESSION CODE FILE
 (defun get-wat-file-s-expression (wat-filename)
@@ -63,8 +63,19 @@
 ; NOTIFICATIONS 
 
 (defun notification (message)
-	(print message))
+	(format t "~a~%" message))
+
+(defun progress-notification (message)
+	(format t "~a ... " message))
+
+(defun done-notification ()
+	(format t "done ~%"))
 
 (defun notification-with-step (message)
-	(print (concatenate 'string "STEP : " (write-to-string (incf *current-step*))))
-	(notification message))
+	(format t "STEP : ~a ~a~%" (incf *current-step*) message))
+
+(defun progress-notification-with-step (message)
+	(format t "step : ~a ~a ... " (incf *current-step*) message))
+
+(defun error-notification (message)
+	(format t message))
