@@ -15,18 +15,36 @@
       :genome genome)))
 
 (defmethod crossover (webassembly-software-A webassembly-software-B)
-
-  )
+	(notification (format t "crossover ~a ~a" webassembly-software-A webassembly-software-B))
+	(let ((nodeA (getnode (slot-value webassembly-software-A 'genome))))
+		(let ((nodeB (getnode (slot-value webassembly-software-B 'genome))))
+			(replacenode-atposition (slot-value webassembly-software-A 'genome) nodeB)
+		)
+	)
+	; webassembly-software-A
+)
 
 (defmethod mutate (webassembly-software-A)
-  
+	(notification (format t "mutate ~a" webassembly-software-A))
+	webassembly-software-A
   )
 
 (defmethod fitness (webassembly-software-A)
-	'10.0
-	; (slot-value webassembly-software-A 'fitness)
-	; (getf (webassembly-software webassembly-software-A) fitness)
-	)
+	(let ((test-table (slot-value webassembly-software-A 'testtable)))
+      (let ((fitness 0))
+          (loop for x in test-table do
+            (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
+              (if (string-equal (car temp) "error")
+                (progn
+                  (if (string-equal (car temp) "true")
+                      (progn 
+                      (error-notification "has failed")
+                      (block nil (return (list (worst) test-table))))))
+                (progn 
+                  (setf fitness (+ fitness (parse-integer(caddr temp))))))
+              )
+            ) fitness))
+)
 
 ; FITNESS UTIlS
 
