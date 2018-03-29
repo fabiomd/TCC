@@ -45,27 +45,27 @@
 
 
 (defun test (webassembly-software-A)
-  (notification (format t "mutate ~a" webassembly-software-A))
-    ; (let ((test-table (slot-value webassembly-software-A 'testtable)))
-    ;   (let ((fitness 0))
-    ;       (loop for x in test-table do
-    ;         (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
-    ;           (if (string-equal (car temp) "error")
-    ;             (progn
-    ;               (if (string-equal (car temp) "true")
-    ;                   (progn 
-    ;                   (error-notification "has failed")
-    ;                   (block nil (return (list (worst) test-table))))))
-    ;             (progn 
-    ;               (setf fitness (+ fitness (parse-integer(caddr temp))))))
-    ;           )
-    ;         ) fitness))
-  (fitness webassembly-software-A)
+    (notification "fitness")
+    (let ((test-table (slot-value webassembly-software-A 'testtable)))
+      (let ((fitness 0))
+          (loop for x in test-table do
+            (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
+              (if (string-equal (car temp) "error")
+                (progn
+                  (if (string-equal (car temp) "true")
+                      (progn 
+                      (error-notification "has failed")
+                      (block nil (return (list (worst) test-table))))))
+                (progn 
+                  (setf fitness (+ fitness (parse-integer(caddr temp))))))
+              )
+            ) fitness))
+    ; (testtable-fitness (slot-value webassembly-software-A 'testtable))
 )
 
 (run "add.wasm")
 
-(evolve #'test :max-evals 100) 
+(evolve #'test :max-evals 3) 
 
 ; (notification-with-step "evolving")
 ; (evolve #'test :max-evals *evals*

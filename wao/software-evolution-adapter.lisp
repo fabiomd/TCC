@@ -15,36 +15,58 @@
       :genome genome)))
 
 (defmethod crossover (webassembly-software-A webassembly-software-B)
-	(notification (format t "crossover ~a ~a" webassembly-software-A webassembly-software-B))
+	; (notification (format t "crossover ~a ~a" webassembly-software-A webassembly-software-B))
+	(notification "crossover")
 	(let ((nodeA (getnode (slot-value webassembly-software-A 'genome))))
 		(let ((nodeB (getnode (slot-value webassembly-software-B 'genome))))
-			(replacenode-atposition (slot-value webassembly-software-A 'genome) nodeB)
+			; (print nodeA)
+			; (print nodeB)
+			(let ((nodeTemp (cons
+			    (if (listp (car nodeB))
+			    	(car nodeB) 
+			    	(list (car nodeB))
+			    ) 
+				; (car nodeB) 
+				(cdr nodeA))))
+				; (print nodeTemp)
+				(with-slots (fitness testtable genome) webassembly-software-A
+					; (print "antes")
+					; (print genome)
+					(let ((temp-webassembly-software (copy webassembly-software-A)))
+						(setf (slot-value temp-webassembly-software 'genome)
+							(car (replacenode-atposition (slot-value temp-webassembly-software 'genome) (car nodeTemp) (car (cdr nodeTemp))))
+						)
+					; (print "depois")
+					; (print (slot-value temp-webassembly-software 'genome))
+					temp-webassembly-software
+					)
+				)
+			)
 		)
 	)
-	; webassembly-software-A
 )
 
 (defmethod mutate (webassembly-software-A)
-	(notification (format t "mutate ~a" webassembly-software-A))
+	; (notification (format t "mutate ~a" webassembly-software-A))
+	(notification "mutate")
 	webassembly-software-A
   )
 
-(defmethod fitness (webassembly-software-A)
-	(let ((test-table (slot-value webassembly-software-A 'testtable)))
-      (let ((fitness 0))
-          (loop for x in test-table do
-            (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
-              (if (string-equal (car temp) "error")
-                (progn
-                  (if (string-equal (car temp) "true")
-                      (progn 
-                      (error-notification "has failed")
-                      (block nil (return (list (worst) test-table))))))
-                (progn 
-                  (setf fitness (+ fitness (parse-integer(caddr temp))))))
-              )
-            ) fitness))
-)
+; (defmethod testtable-fitness (test-table)
+;       (let ((fitness 0))
+;           (loop for x in test-table do
+;             (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
+;               (if (string-equal (car temp) "error")
+;                 (progn
+;                   (if (string-equal (car temp) "true")
+;                       (progn 
+;                       (error-notification "has failed")
+;                       (block nil (return (list (worst) test-table))))))
+;                 (progn 
+;                   (setf fitness (+ fitness (parse-integer(caddr temp))))))
+;               )
+;             ) fitness)
+; )
 
 ; FITNESS UTIlS
 

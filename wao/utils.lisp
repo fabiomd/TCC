@@ -39,32 +39,129 @@
 ; 	)
 ; )
 
-(defun replacenode-atposition (tree node)
+; (defun replacenode-atposition (tree node)
+; 	(if (listp tree)
+; 		(if (listp (cdr node))
+; 			(let ((pos (cadr node)))
+; 				(if (= pos (length tree))
+; 					(car node)
+; 					(replace tree (list (replacenode-atposition (nth pos tree) (cons (car node) (cddr node)))) :start1 pos)
+; 				)
+; 			)
+; 			(if (= (cdr node) (length tree))
+; 				(car node)
+; 				(let ((pos (cdr node)))
+; 					(replace tree (car node) :start1 pos)
+; 				)
+; 			)
+; 		)
+; 		(car node)
+; 	)
+; )
+
+
+; (defun replacenode-atposition (tree node)
+; 	(if (listp tree)
+; 		(if (listp (cdr node))
+; 			(let ((pos (cadr node)))
+; 				(replace 
+; 					tree
+; 					(replacenode-atposition 
+; 						(nth pos tree) 
+; 						(list (car node) (cddr node))
+; 					) 
+; 					:start1 pos
+; 				)
+; 			)
+; 			(if (= (cdr node) (length tree))
+; 				(if (listp (car node))
+; 					(car node)
+; 					(list (car node))
+; 				)
+; 				(replace tree (car node) :start1 (cdr node))
+; 			)
+; 		)
+; 		(if (listp (car node))
+; 			(car node)
+; 			(list (car node))
+; 		)
+; 		; (car node)
+; 	)
+; )
+
+; RECEIVES A TREE AND A NODETRACK IN THE FORM OF (MODULE (1 5 6 ...))
+; (defun replacenode-atposition (tree node)
+; 	(if (listp tree)
+; 		(if (listp (car (cdr node)))
+; 			(let ((pos (caadr node)))
+; 				(let ((temppath (car (cdr node))))
+; 					(replace 
+; 						tree
+; 						(replacenode-atposition 
+; 							(nth pos tree) 
+; 							(list (car node) (cdr temppath))
+; 						) 
+; 						:start1 pos
+; 					)
+; 				)
+; 			)
+; 			(if (= (car (cdr node)) (length tree))
+; 				(if (listp (car node))
+; 					(car node) 
+; 					(list (car node))
+; 				)
+; 				(let ((post (car (cdr node))))
+; 					(replace 
+; 						tree
+; 						(if (listp (car node))
+; 							(car node) 
+; 							(list (car node))
+; 						)
+; 						:start1 pos
+; 					)
+; 				)
+; 			)
+; 		)
+; 		(if (listp (car node))
+; 			(car node)
+; 			(list (car node))
+; 		)
+; 	)
+; )
+
+(defun replacenode-atposition (tree node track)
 	(if (listp tree)
-		(if (listp (cdr node))
-			(let ((pos (cadr node)))
-				(if (= pos (length tree))
-					(car node)
-					(replace tree (list (replacenode-atposition (nth pos tree) (cons (car node) (cddr node)))) :start1 pos)
-				)
+		(if (listp track)
+			(let ((pos (car track)))
+				(list (replace tree 
+					     (replacenode-atposition (nth pos tree) node (cdr track)) 
+					     :start1 pos
+				))
 			)
-			(nth (cdr node) tree)
+			(if (= (length tree) track)
+				node
+				(replace tree
+						 node
+						 :start1 track)
+			)
 		)
-		(car node)
+		node
+		; (error "~S Invalid tree format." tree)
 	)
 )
+
 
 (defun getnode (tree)
 	(if (listp tree)
 		(let ((pos (random (+ (length tree) 1))))
 			(if (= pos (length tree))
-				(cons tree (length tree))
+				(list tree (length tree))
 				(let ((answer (getnode (nth pos tree))))
-					(cons (car answer) (append (list pos) (cdr answer)))
+					(list (car answer) (apply #'append (list pos) (cdr answer)))
 				)
 			)
 		)
-		(cons tree 0)
+		(list tree 1)
 	)
 )
 
@@ -81,13 +178,13 @@
 ; 	(nconc a (list 5))
 ; )	
 
-(defun get-node (node)
-	(if listp node)
-	(if (or (equal (length node) 1) (< (random 100) 30)) 
-		node 
-		(get-node (nth (random (length node)) node))
-	)
-)
+; (defun get-node (node)
+; 	(if listp node)
+; 		(if (or (equal (length node) 1) (< (random 100) 30)) 
+; 			node 
+; 			(get-node (nth (random (length node)) node))
+; 		)
+; )
 
 ; NOTIFICATIONS 
 
