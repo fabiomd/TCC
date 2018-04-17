@@ -6,6 +6,7 @@
   :license "Specify license here"
   :serial t
   :depends-on (curry-compose-reader-macros
+;;;;               cl-ppcre
                split-sequence
                software-evolution
                software-evolution-utility)

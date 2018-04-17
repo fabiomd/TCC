@@ -2,9 +2,9 @@
 
 ; WEBASSEMBLY SOFTWARE OBJECT
 (defclass webassembly-software (software)
-  ((fitness :initarg :fitness :accessor fitness :initform nil)
+  ((fitness   :initarg :fitness   :accessor fitness   :initform nil)
    (testtable :initarg :testtable :accessor testtable :initform nil)
-   (genome :initarg :genome :accessor genome :initform nil)))
+   (genome    :initarg :genome    :accessor genome    :initform nil)))
 
  ; COPY METHOD RECEIVES A SOFTWARE AND CREATE A COPY OF IT
 (defmethod copy ((webassembly webassembly-software))
@@ -17,8 +17,8 @@
 (defmethod crossover (webassembly-software-A webassembly-software-B)
 	; (notification (format t "crossover ~a ~a" webassembly-software-A webassembly-software-B))
 	(notification "crossover")
-	(let ((nodeA (getnode (slot-value webassembly-software-A 'genome))))
-		(let ((nodeB (getnode (slot-value webassembly-software-B 'genome))))
+	(let ((nodeA (draw-node (slot-value webassembly-software-A 'genome))))
+		(let ((nodeB (draw-node (slot-value webassembly-software-B 'genome))))
 			; (print nodeA)
 			; (print nodeB)
 			(let ((nodeTemp (cons
@@ -34,7 +34,7 @@
 					; (print genome)
 					(let ((temp-webassembly-software (copy webassembly-software-A)))
 						(setf (slot-value temp-webassembly-software 'genome)
-							(car (replacenode-atposition (slot-value temp-webassembly-software 'genome) (car nodeTemp) (car (cdr nodeTemp))))
+							(replacenode (slot-value temp-webassembly-software 'genome) (car nodeTemp) (car (cdr nodeTemp)))
 						)
 					; (print "depois")
 					; (print (slot-value temp-webassembly-software 'genome))

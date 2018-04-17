@@ -30,6 +30,7 @@
           ; *tournament-size* 2
           ; *cross-chance* 2/3
           ; *tournament-eviction-size* 2
+          ; *actions* (list #'add #'rm #'swap)
   		    *population* (loop :for n :below *max-population-size* :collect (copy *original*)))
     (done-notification))
 

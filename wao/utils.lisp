@@ -13,12 +13,10 @@
 		)
 )
 
-; ;; READ A WAT FILE
-; (defun get-wat-file (wat-filename)
-;   (with-open-file (stream wat-filename)
-;     (loop for line = (read-line stream nil)
-;           while line
-;           collect line)))
+(defun rm-last-element (list)
+           (loop for l on list
+                 while (rest l)
+                 collect (first l)))
 
 ; READ S-EXPRESSION CODE FILE
 (defun get-wat-file-s-expression (wat-filename)
@@ -27,108 +25,8 @@
 	  (read file))
 )
 
-; (defun replacenode (tree node)
-; 	(if (listp tree)
-; 		(let ((pos (random (+ (length tree) 1))))
-; 			(if (= pos (length tree))
-; 				node
-; 				(replace tree (list (replacenode (nth pos tree) node)) :start1 pos)
-; 			)
-; 		)
-; 		node
-; 	)
-; )
 
-; (defun replacenode-atposition (tree node)
-; 	(if (listp tree)
-; 		(if (listp (cdr node))
-; 			(let ((pos (cadr node)))
-; 				(if (= pos (length tree))
-; 					(car node)
-; 					(replace tree (list (replacenode-atposition (nth pos tree) (cons (car node) (cddr node)))) :start1 pos)
-; 				)
-; 			)
-; 			(if (= (cdr node) (length tree))
-; 				(car node)
-; 				(let ((pos (cdr node)))
-; 					(replace tree (car node) :start1 pos)
-; 				)
-; 			)
-; 		)
-; 		(car node)
-; 	)
-; )
-
-
-; (defun replacenode-atposition (tree node)
-; 	(if (listp tree)
-; 		(if (listp (cdr node))
-; 			(let ((pos (cadr node)))
-; 				(replace 
-; 					tree
-; 					(replacenode-atposition 
-; 						(nth pos tree) 
-; 						(list (car node) (cddr node))
-; 					) 
-; 					:start1 pos
-; 				)
-; 			)
-; 			(if (= (cdr node) (length tree))
-; 				(if (listp (car node))
-; 					(car node)
-; 					(list (car node))
-; 				)
-; 				(replace tree (car node) :start1 (cdr node))
-; 			)
-; 		)
-; 		(if (listp (car node))
-; 			(car node)
-; 			(list (car node))
-; 		)
-; 		; (car node)
-; 	)
-; )
-
-; RECEIVES A TREE AND A NODETRACK IN THE FORM OF (MODULE (1 5 6 ...))
-; (defun replacenode-atposition (tree node)
-; 	(if (listp tree)
-; 		(if (listp (car (cdr node)))
-; 			(let ((pos (caadr node)))
-; 				(let ((temppath (car (cdr node))))
-; 					(replace 
-; 						tree
-; 						(replacenode-atposition 
-; 							(nth pos tree) 
-; 							(list (car node) (cdr temppath))
-; 						) 
-; 						:start1 pos
-; 					)
-; 				)
-; 			)
-; 			(if (= (car (cdr node)) (length tree))
-; 				(if (listp (car node))
-; 					(car node) 
-; 					(list (car node))
-; 				)
-; 				(let ((post (car (cdr node))))
-; 					(replace 
-; 						tree
-; 						(if (listp (car node))
-; 							(car node) 
-; 							(list (car node))
-; 						)
-; 						:start1 pos
-; 					)
-; 				)
-; 			)
-; 		)
-; 		(if (listp (car node))
-; 			(car node)
-; 			(list (car node))
-; 		)
-; 	)
-; )
-
+; REPLACE THE NODE ON THE PATH
 (defun replacenode-atposition (tree node track)
 	(if (listp tree)
 		(if (listp track)
@@ -146,17 +44,22 @@
 			)
 		)
 		node
-		; (error "~S Invalid tree format." tree)
 	)
 )
 
 
-(defun getnode (tree)
+; CALL THE FUNC TO REPLACE THE NODE FOLLOWING THE PATH
+(defun replacenode (tree node track)
+	(car (replacenode-atposition tree node track)))
+
+
+; DRAW A RANDOM NODE AND RETURN IT WITH ITS PATH
+(defun draw-node (tree)
 	(if (listp tree)
 		(let ((pos (random (+ (length tree) 1))))
 			(if (= pos (length tree))
 				(list tree (length tree))
-				(let ((answer (getnode (nth pos tree))))
+				(let ((answer (draw-node (nth pos tree))))
 					(list (car answer) (apply #'append (list pos) (cdr answer)))
 				)
 			)
@@ -165,26 +68,80 @@
 	)
 )
 
-; (defun gettrack (treeA treeB)
-; 	(if (listp tree)
-; 		(let ((pos (random (+ (length tree) 1))))
-; 			(if (= pos (length tree))
-; 				(nconc a (list pos))
-; 				(gettrack )
-; 			)
-; 		)
-; 		(nconc a (list pos))
-; 	)
-; 	(nconc a (list 5))
-; )	
 
-; (defun get-node (node)
-; 	(if listp node)
-; 		(if (or (equal (length node) 1) (< (random 100) 30)) 
-; 			node 
-; 			(get-node (nth (random (length node)) node))
-; 		)
-; )
+; TESTE AREA START
+
+(defun choose-action (actions)
+	(if (listp actions)
+		(get-nth (random (length actions)) actions)
+		(error-notification "choose-action must receives a list of actions")
+	)
+)
+
+; TESTE AREA END
+
+(defvar i32-base      "i32")
+(defvar i64-base      "i64")
+(defvar i32-operators (list "add" "sub"))
+(defvar i64-operators (list "add" "sub"))
+
+
+(defun i32-op (operator)
+	(let ((pos (random (- (length i32-operators) 1))))
+		(if (string= operator (nth pos i32-operators))
+			(nth (+ 1 pos) i32-operators)
+			(nth pos i32-operators)
+		)
+	)
+)
+
+(defun i64-op (operator)
+	(let ((pos (random (- (length i64-operators) 1))))
+		(if (string= operator (nth pos i64-operators))
+			(nth (+ 1 pos) i64-operators)
+			(nth pos i64-operators)
+		)
+	)
+)
+
+(defun swap (tree)
+	(let ((node (string-upcase (nth (random (length tree)) tree))))
+		(cond ((string= "i32.add" node)
+		       (i32-op node))
+	      ((string= "i64.add" node)
+		       (i64-op node)))
+	)
+)
+
+(defun swap-base (base op)
+	(cond ((string= i32-base base)
+		       (i32-op op))
+	      ((string= i64-base base)
+		       (i64-op op))
+	      (t (error-notification "invalid base")))
+)
+
+(defun swap-base (op)
+	(let ((base (car (split-sequence #\. op))))
+		(cond
+			((string= base i32-base) (i64-base))
+			((string= base i64-base) (i32-base))
+			(t (error-notification "invalid base"))
+		)
+	)
+)
+
+(defun testeee (node)
+	(swap-node (car (split-sequence #\. node)) (cdr node))
+)
+
+; (print (testeee "i32.add"))
+	; (pcase node
+	; ; (case (intern node)
+	; ; (switch (node :test #'equal)
+	; 	("i32.add" (i32-op "i32.add"))
+	; 	("i64.add" (i64-op "i64.add"))
+	; )
 
 ; NOTIFICATIONS 
 
@@ -204,4 +161,4 @@
 	(format t "step : ~a ~a ... " (incf *current-step*) message))
 
 (defun error-notification (message)
-	(format t message))
+	(error message))

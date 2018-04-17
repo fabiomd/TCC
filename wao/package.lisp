@@ -2,6 +2,8 @@
 
 (defpackage #:wao
 	(:use #:common-lisp
+		  ; #:cl-ppcre
+		  #:alexandria
 	      #:curry-compose-reader-macros
 	      #:split-sequence
 	      #:software-evolution
