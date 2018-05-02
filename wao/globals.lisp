@@ -17,7 +17,7 @@
 (defvar *fitness-shell-path*       nil "path to fitness shell")
 (defvar *evals*                    nil "maximum number of test evaluations.")
 (defvar *period*                   nil "period at which to run `checkpoint'.")
-(defvar *actions*                  nil "list of action the system can choose.")
+(defvar *actions*                  nil "list of action the system can choose")
 
 ; UTILS VARIABLES
 (defvar *current-step*             0   "current step")

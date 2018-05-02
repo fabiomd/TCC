@@ -66,7 +66,13 @@
 
 (run "add.wasm")
 
-(evolve #'test :max-evals 3) 
+; (evolve #'test :max-evals 3) 
+
+; (print (slot-value *original* 'genome))
+(let ((tempCODE (generate-dependecy-graph (slot-value *original* 'genome))))
+  (print (retrieve-code tempCODE))
+)
+; (print-graph (generate-dependecy-graph (slot-value *original* 'genome)))
 
 ; (notification-with-step "evolving")
 ; (evolve #'test :max-evals *evals*
