@@ -21,3 +21,7 @@
 
 ; UTILS VARIABLES
 (defvar *current-step*             0   "current step")
+
+
+*******************************************************************************************
+(defvar *value-types*              (list "i32" "i64" "f32" "f64") "webassembly value types")
