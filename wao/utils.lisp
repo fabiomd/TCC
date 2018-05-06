@@ -162,3 +162,44 @@
 
 (defun error-notification (message)
 	(error message))
+
+; ********************************************************************************************
+
+; CREATE A DEPENDECY BETWEEN NODES, NODE2 DEPENDS ON NODE 1, NODE1 HAS NODE2 AS DEPENDENTS
+(defun add-dependency (node1 node2)
+	(add-dependson  node2 node1)
+	(add-dependents node1 node2)
+)
+
+(defun add-dependson (node dependency)
+	(setf (slot-value node 'dependson) (append (slot-value node 'dependson) (list dependency)))
+)
+
+(defun add-dependents (node dependency)
+	(setf (slot-value node 'dependents) (append (slot-value node 'dependents) (list dependency)))
+)
+
+; ********************************************************************************************
+
+(defun get-signature-with-name (signatures name)
+	(loop for signature in signatures do
+		(if (eql (type-of signature) 'param)
+			(if (compare-string (slot-value signature 'name) name)
+				(signature)
+			)
+		)
+	)
+)
+
+(defun get-signature-return (signatures)
+	(loop for signature in signatures do
+		(if (eql (type-of signature) 'result)
+			(signature)
+		)
+	)
+	nil
+)
+
+(defun compare-string (string1 string2)
+	(eql (string-downcase (write-to-string string1)) (string-downcase (write-to-string string2)))
+)

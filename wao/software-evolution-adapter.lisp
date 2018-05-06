@@ -109,3 +109,42 @@
 	      (print fitness)
 	      (print testtable)
 	      (print genome)))
+
+
+; GENERATE THE DEPENDECY GRAPH
+(defun generate-dependecy-graph (wat-code-graph)
+	; CREATE THE DEPENDECY TREE
+	(let ((root (make-instance 'root-dependecy-node)))
+		; CREATE A DEPENDECY BETWEEN THEN
+		(loop for sub-code in wat-code-graph do
+			(print sub-code)
+		)
+		; (add-dependency root module)
+	)
+)
+
+; GENERATE THE CODE GRAPH
+(defun generate-code-graph (wat-code)
+	(if (string= (car wat-code) "MODULE")
+		; CREATE A MODULE NODE
+		(let ((module (expand-module)))
+			; CREATE THE CODE GRAPH
+			(let ((wat-code-graph (list module)))
+				; SCAN THE CODE
+				(loop for sub-code in (cdr wat-code) do
+					(let ((temp (expand sub-code)))
+						(setf wat-code-graph (append wat-code-graph (list temp)))
+					)
+				)
+				; RETURN THE CODE_GRAPH
+				wat-code-graph
+			)
+		)
+		(error-notification "require module")
+	)
+)
+
+; RETRIEVE THE CODE AS STRING
+(defun write-code (wat-code)
+	(retrieve-code wat-code)
+)

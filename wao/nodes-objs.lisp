@@ -1,7 +1,7 @@
 (in-package #:wao)
 
 (defclass node ()
-  ((operator :initarg :operator :accessor operator :initform nil)))
+  ((operator    :initarg :operator    :accessor operator    :initform nil)))
 
 ; ****************************************************************************************************
 
@@ -65,5 +65,11 @@
 ; i32.add funcall call ...
 (defclass operation (node)
   ((parameters :initarg :parameters :accessor parameters :initform nil)))
+
+; ****************************************************************************************************
+
+(defclass get-local-node (node)
+  ((operator  :initarg :operator  :accessor operator  :initform 'GET_LOCAL)
+   (name      :initarg :name      :accessor name      :initform nil)))
 
 ; ****************************************************************************************************

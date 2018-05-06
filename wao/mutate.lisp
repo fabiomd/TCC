@@ -10,14 +10,14 @@
 	)
 )
 
-(defun get-signature-return (nodes)
-	(loop for node in nodes do
-		(if (eql (type-of node) 'result)
-			(node)
-		)
-	)
-	(error-notification "missing result in function")
-)
+; (defun get-signature-return (nodes)
+; 	(loop for node in nodes do
+; 		(if (eql (type-of node) 'result)
+; 			(node)
+; 		)
+; 	)
+; 	(error-notification "missing result in function")
+; )
 
 
 ; (defclass signature-node (node)
