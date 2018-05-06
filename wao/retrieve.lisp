@@ -106,12 +106,16 @@
 
 ; ****************************************************************************************************
 
-(defun retrieve-body (node)
-	(let ((code "(bodys)"))
-		; (with-slots (operator name) node
-		; 	(setf code (concatenate 'string "(" (format-operator operator) " " (format-name name) ")"))
-		; 	code
-		; )
+(defun retrieve-body (nodes)
+	(let ((code ""))
+		(loop for node in nodes do
+			(cond ((eql (type-of node) 'operator-node)
+			      	   (setf code (concatenate 'string code (retrieve-operator  node))))
+			      ((eql (type-of node) 'get-local-node)
+				       (setf code (concatenate 'string code (retrieve-get-local node))))
+				  (t (error-notification "undefined signature"))
+		    )
+		)
 		code
 	)
 )
@@ -138,30 +142,25 @@
 
 ; ****************************************************************************************************
 
-(defun format-operator (operator)
-	(let ((string-op (string-downcase (write-to-string operator))))
-		string-op
-	)
-)
-
-(defun format-name (name)
-	(let ((string-name (write-to-string name)))
-		(if (stringp name)
-			(string-downcase string-name)
-			string-name
+(defun retrieve-operator (node)
+	(let ((code ""))
+		(with-slots (typeop operator parameters) node
+			(setf code (concatenate 'string code "(" (format-typeop typeop) "." (format-operator operator) " "))
+			(loop for temp in parameters do
+				(setf code (concatenate 'string code " " (retrieve-body temp)))
+			)
+			(setf code (concatenate 'string code ")"))
+			code
 		)
 	)
 )
 
-(defun generated-format-name (name)
-	(let ((string-name (string-downcase (write-to-string name))))
-		string-name
-	)
-)
-
-(defun format-typeop (typeop)
-	(let ((string-typeop (string-downcase (write-to-string typeop))))
-		string-typeop
+(defun retrieve-get-local (node)
+	(let ((code ""))
+		(with-slots (operator name) node
+			(setf code (concatenate 'string "(" (format-operator operator) " " (format-name name) ")"))
+			code
+		)
 	)
 )
 

@@ -203,3 +203,32 @@
 (defun compare-string (string1 string2)
 	(eql (string-downcase (write-to-string string1)) (string-downcase (write-to-string string2)))
 )
+
+; ****************************************************************************************************
+
+(defun format-operator (operator)
+	(let ((string-op (string-downcase (write-to-string operator))))
+		string-op
+	)
+)
+
+(defun format-name (name)
+	(let ((string-name (write-to-string name)))
+		(if (stringp name)
+			(string-downcase string-name)
+			string-name
+		)
+	)
+)
+
+(defun generated-format-name (name)
+	(let ((string-name (string-downcase (write-to-string name))))
+		string-name
+	)
+)
+
+(defun format-typeop (typeop)
+	(let ((string-typeop (string-downcase (write-to-string typeop))))
+		string-typeop
+	)
+)

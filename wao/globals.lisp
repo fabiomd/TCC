@@ -25,3 +25,4 @@
 
 ; *******************************************************************************************
 (defvar *value-types*              (list "i32" "i64" "f32" "f64") "webassembly value types")
+(defvar *operators*                (list "add" "sub" "mul" "div") "webassembly operators")

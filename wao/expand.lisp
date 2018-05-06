@@ -37,7 +37,7 @@
 	(let ((funcNode (make-instance 'func-node)))
 		(setf (slot-value funcNode 'name)      (car wat-code)
 			  (slot-value funcNode 'signature) (expand-signatures (cdr (rm-last-element wat-code)))
-			  (slot-value funcNode 'body)      (expand-body      (nth (- (length wat-code) 1) wat-code)))
+			  (slot-value funcNode 'body)      (expand-body       (list (nth (- (length wat-code) 1) wat-code))))
 		funcNode
 	)
 )
@@ -73,9 +73,15 @@
 )
 
 (defun expand-body (wat-code)
-	(let ((bodyNode nil))
-		; :typeop (caddr wat-code))))
-		bodyNode
+	(let ((body-node '()))
+		(loop for body in wat-code do
+			(cond ((check-operator (write-to-string (car body)))
+				     (setf body-node (append body-node (list (expand-operator body)))))
+				  ((string= "GET_LOCAL" (car body))
+				     (setf body-node (append body-node (list (expand-get-local body)))))
+				  (t (error-notification "undefined body operator")))
+		)
+		body-node
 	)
 )
 
@@ -96,14 +102,66 @@
 
 ; ****************************************************************************************************
 
+(defun check-operator (wat-code)
+	(let ((temp (split-sequence #\. wat-code)))
+		(if (and (listp temp) (> (length temp) 1))
+			(and (find (string-downcase (car temp))  *value-types* :test #'equal)
+				 (find (string-downcase (cadr temp)) *operators*   :test #'equal)
+			)
+			nil
+		)
+	)
+)
+
+; ****************************************************************************************************
+
+; BODY
+
+(defun expand-operator (wat-code)
+	(let ((operator (make-operator (write-to-string (car wat-code)))))
+		(let ((temp-parameters '()))
+			(loop for param in (cdr wat-code) do
+				(setf temp-parameters (append temp-parameters (list (expand-body (list param)))))
+			)
+			(setf (slot-value operator 'parameters) temp-parameters)
+		)
+		operator
+	)
+)
+
+(defun expand-get-local (wat-code)
+	(let ((get-local-node (make-instance 'get-local-node)))
+		(setf (slot-value get-local-node 'name) (cadr wat-code))
+		get-local-node
+	)
+)
+
+; ****************************************************************************************************
+
+(defun make-operator (wat-code)
+	(let ((operator (make-instance 'operator-node)))
+		(let ((temp (split-sequence #\. wat-code)))
+			(let ((temptype (find (string-downcase (car temp)) *value-types* :test #'equal)))
+				(if temptype
+					(progn
+						(setf (slot-value operator 'typeop)   (intern (car temp)))
+						(setf (slot-value operator 'operator) (intern (cadr temp)))
+					)
+				)
+			)
+		)
+		operator
+	)
+)
+
+; ****************************************************************************************************
+
 (defun expand (wat-code)
 	(let ((operator (car wat-code)))
 		(cond ((string= "FUNC" operator)
 		      	   (expand-func   (cdr wat-code)))
 		      ((string= "EXPORT" operator)
 			       (expand-export (cdr wat-code)))
-		      ; ((string= "module" operator)
-			       ; (expand-module ))
 		      ((string= "MEMORY" operator)
 			       (expand-memory (cdr wat-code)))
 		      ((string= "TABLE" operator)

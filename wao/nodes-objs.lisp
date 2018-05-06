@@ -13,7 +13,8 @@
 ; (module ...)
 ; ... represents a list of nodes
 (defclass module-node (node)
-  ((operator :initarg :operator :accessor operator :initform 'MODULE)))
+  ((operator :initarg :operator :accessor operator :initform 'MODULE)
+   (body     :initarg :body     :accessor body     :initform nil)))
 
 ; (table 0 $1)
 (defclass table-node (node)
@@ -63,8 +64,9 @@
 ; ****************************************************************************************************
 
 ; i32.add funcall call ...
-(defclass operation (node)
-  ((parameters :initarg :parameters :accessor parameters :initform nil)))
+(defclass operator-node (node)
+  ((typeop     :initarg :typeop     :accessor typeop     :initform nil)
+   (parameters :initarg :parameters :accessor parameters :initform nil)))
 
 ; ****************************************************************************************************
 

@@ -129,15 +129,16 @@
 		; CREATE A MODULE NODE
 		(let ((module (expand-module)))
 			; CREATE THE CODE GRAPH
-			(let ((wat-code-graph (list module)))
+			(let ((wat-code-graph '()))
 				; SCAN THE CODE
 				(loop for sub-code in (cdr wat-code) do
 					(let ((temp (expand sub-code)))
 						(setf wat-code-graph (append wat-code-graph (list temp)))
 					)
 				)
+				(setf (slot-value module 'body) wat-code-graph)
 				; RETURN THE CODE_GRAPH
-				wat-code-graph
+				module
 			)
 		)
 		(error-notification "require module")
@@ -145,6 +146,6 @@
 )
 
 ; RETRIEVE THE CODE AS STRING
-(defun write-code (wat-code)
-	(retrieve-code wat-code)
-)
+; (defun write-code (wat-code)
+; 	(retrieve-code wat-code)
+; )
