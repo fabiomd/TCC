@@ -26,6 +26,26 @@
 	)
 )
 
+(defun swap (node)
+)
+
+; ****************************************************************************************************
+(defun swap-typeop (typeop)
+	(let ((newValue (choose-new-value typeop (append *i-value-types* *f-value-types*))))
+		newValue
+	)
+)
+
+; *i-32-operators*
+(defun swap-operator (operator typeop)
+	(cond ((eql typeop I32))
+	)
+	(let ((newValue (choose-new-value operator (append ))))
+	)
+)
+; ***************************************************************************************************
+
+
 (defun apply-action (tree action)
 	(let ((func-nodes '()))
 		(loop for node in tree do
@@ -49,3 +69,5 @@
 	(let ((pos (random (length node))))
 	)
 )
+
+; ******************************************************************

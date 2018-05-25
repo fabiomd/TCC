@@ -134,3 +134,22 @@
 		(list tree 1)
 	)
 )
+
+; ****************************************************************************************************
+; SOFTWARE ADAPTER UTILS
+; ****************************************************************************************************
+
+; GIVE A LIST OF OPTIONS, CHOOSE A NEW VALUE, IF THERES NOT ENOUGH OPTIONS, RETURN THE OLDVALUE
+(defun choose-new-value (oldValue options)
+	(if (< (length options) 2)
+		oldValue
+		(let ((pos (random (- (length options) 1))))
+			(let ((newValue (nth pos options)))
+				(if (eql oldValue newValue)
+					(setf newValue (nth (+ pos 1) options))
+				)
+				newValue
+			)
+		)
+	)
+)
