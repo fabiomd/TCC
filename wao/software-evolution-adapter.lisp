@@ -1,5 +1,9 @@
 (in-package #:wao)
 
+; ****************************************************************************************************
+; SOFTWARE EVOLUTION METHODS
+; ****************************************************************************************************
+
 ; WEBASSEMBLY SOFTWARE OBJECT
 (defclass webassembly-software (software)
   ((fitness   :initarg :fitness   :accessor fitness   :initform nil)
@@ -52,23 +56,9 @@
 	webassembly-software-A
   )
 
-; (defmethod testtable-fitness (test-table)
-;       (let ((fitness 0))
-;           (loop for x in test-table do
-;             (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
-;               (if (string-equal (car temp) "error")
-;                 (progn
-;                   (if (string-equal (car temp) "true")
-;                       (progn 
-;                       (error-notification "has failed")
-;                       (block nil (return (list (worst) test-table))))))
-;                 (progn 
-;                   (setf fitness (+ fitness (parse-integer(caddr temp))))))
-;               )
-;             ) fitness)
-; )
-
-; FITNESS UTIlS
+; ****************************************************************************************************
+; SHELL SCRIPTS
+; ****************************************************************************************************
 
 ; CALL THE SHELL SCRIPT AND RECEIVES IT OUTPUT
 (defun webassembly-testsuite (test-script webassembly-wat-path)
@@ -101,7 +91,9 @@
 				)
 		(block nil (return (list fitness test-table)))))))
 
-; EXTRA METHODS
+; ****************************************************************************************************
+; PRINT
+; ****************************************************************************************************
 
 ; PRINT THE OBJECTS OF THE SOFTWARE
 (defmethod print-software ((webassembly webassembly-software))
@@ -111,20 +103,12 @@
 	      (print genome)))
 
 
-; GENERATE THE DEPENDECY GRAPH
-(defun generate-dependecy-graph (wat-code-graph)
-	; CREATE THE DEPENDECY TREE
-	(let ((root (make-instance 'root-dependecy-node)))
-		; CREATE A DEPENDECY BETWEEN THEN
-		(loop for sub-code in wat-code-graph do
-			(print sub-code)
-		)
-		; (add-dependency root module)
-	)
-)
+; ****************************************************************************************************
+; GRAPH
+; ****************************************************************************************************
 
 ; GENERATE THE CODE GRAPH
-(defun generate-code-graph (wat-code)
+(defun generate-dependecy-graph (wat-code)
 	(if (string= (car wat-code) "MODULE")
 		; CREATE A MODULE NODE
 		(let ((module (expand-module)))
@@ -145,7 +129,6 @@
 	)
 )
 
-; RETRIEVE THE CODE AS STRING
-; (defun write-code (wat-code)
-; 	(retrieve-code wat-code)
-; )
+; ****************************************************************************************************
+; MUTATE HELPER
+; ****************************************************************************************************

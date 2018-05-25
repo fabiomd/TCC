@@ -24,5 +24,13 @@
 
 
 ; *******************************************************************************************
-(defvar *value-types*              (list "i32" "i64" "f32" "f64") "webassembly value types")
-(defvar *operators*                (list "add" "sub" "mul" "div") "webassembly operators")
+; (defvar *value-types*              (list "i32" "i64" "f32" "f64") "webassembly value types")
+(defvar *i-value-types*          (list "i32" "i64") "webassembly value int types")
+(defvar *f-value-types*          (list "f32" "f64") "webassembly value float types")
+(defvar *i-32-operators*           (list "add" "sub" "mul" "div_s" "div_u" "rem_s" "rem_u" "and" "or" "xor" "shl" "shr_u" "shr_s" "rotl" "rotr" "eq" "ne" "lt_s" "le_s" "lt_u" "le_u" "gt_s" "ge_s" "gt_u" "ge_u" "clz" "clz" "clz" "ctz" "popcnt" "eqz") "webassembly int 32 operators")
+(defvar *i-64-operators*           (list "add" "sub" "mul" "div_s" "div_u" "rem_s" "rem_u" "and" "or" "xor" "shl" "shr_u" "shr_s" "rotl" "rotr" "eq" "ne" "lt_s" "le_s" "lt_u" "le_u" "gt_s" "ge_s" "gt_u" "ge_u" "clz" "clz" "clz" "ctz" "popcnt" "eqz") "webassembly int 64 operators")
+(defvar *f-32-operators*           (list "add" "sub" "mul" "div" "abs" "neg" "copysign" "ceil" "floor" "trunc" "nearest" "eq" "ne" "lt" "le" "gt" "ge" "sqrt" "min" "max") "webassembly float 32 operators")
+(defvar *f-64-operators*           (list "add" "sub" "mul" "div" "abs" "neg" "copysign" "ceil" "floor" "trunc" "nearest" "eq" "ne" "lt" "le" "gt" "ge" "sqrt" "min" "max") "webassembly float 64 operators")
+(defvar *trunc-operators*          (list "trunc_s" "trunc_u")   "webassembly trunc type")
+(defvar *extend-operators*         (list "extend_s" "extend_u") "webassembly extend type")
+(defvar *convert-operators*        (list "convert_u" "convert_s")   "webassembly convert type")

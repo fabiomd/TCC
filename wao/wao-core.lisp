@@ -69,13 +69,13 @@
 ; (evolve #'test :max-evals 3) 
 
 ; (print (slot-value *original* 'genome))
-(let ((module (generate-code-graph (slot-value *original* 'genome))))
+(let ((module (generate-dependecy-graph (slot-value *original* 'genome))))
   (let ((tempCODE (slot-value module 'body)))
 
-    (print (retrieve-code tempCODE))
+    ; (print (retrieve-code module))
 
 
-    ; (print tempCODE)
+    (print tempCODE)
     ; (print (eql (nth 3 tempCODE) (nth 4 tempCODE)))
     ; (print (eql (nth 1 tempCODE) (nth 1 tempCODE)))
     ; (print (eql (make-instance 'node) (make-instance 'node)))
