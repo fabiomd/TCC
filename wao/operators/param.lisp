@@ -24,3 +24,17 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-param (node)
+	(with-slots (operator name typeop) node
+		(let ((param-node (make-instance 'param
+			:operator operator
+			:name name
+			:typeop typeop
+			)))
+			param-node
+		)
+	)
+)

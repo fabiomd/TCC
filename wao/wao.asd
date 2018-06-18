@@ -12,7 +12,12 @@
   :components ((:file "package")
                (:file "globals")
                (:file "utils")
-               (:file "swap")
+               (:file "webassembly-symbol")
+               (:file "webassembly-symbols-table"       :depends-on ("webassembly-symbol"))
+               (:file "swap"                :depends-on ("utils" 
+                                                         "webassembly-symbols-table"))
+               (:file "mutate"              :depends-on ("utils" 
+                                                         "webassembly-symbols-table"))
                (:file "operators/generic"   :depends-on ("utils"))
                (:file "operators/module"    :depends-on ("utils" 
                                                          "operators/generic"))
@@ -53,6 +58,7 @@
                (:file "software-evolution-adapter" :depends-on ("package" 
                                                                 "expand" 
                                                                 "retrieve"
+                                                                "mutate"
                                                                 "swap"))
       			   (:file "wao-core" :depends-on ("package"
                                               "globals"

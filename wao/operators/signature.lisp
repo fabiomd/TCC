@@ -37,3 +37,24 @@
 		       (retrieve-result node))
     )
 )
+
+; ****************************************************************************************************
+
+(defun copy-signatures (signatures)
+	(let ((signatures-nodes '()))
+		(loop for signature in signatures do
+			(setf signatures-nodes (append signatures-nodes (list (copy-signature signature))))
+		)
+		signatures-nodes
+	)
+)
+
+; ****************************************************************************************************
+
+(defun copy-signature (node)
+	(cond ((eql (type-of node) 'param)
+	      	   (copy-param node))
+	      ((eql (type-of node) 'result)
+		       (copy-result node))
+    )
+)

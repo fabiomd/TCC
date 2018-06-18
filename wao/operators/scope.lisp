@@ -26,3 +26,16 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-scope (node)
+	(with-slots (operator name) node
+		(let ((scope-node (make-instance 'scope-node
+			:operator operator
+			:name name
+			)))
+			scope-node
+		)
+	)
+)

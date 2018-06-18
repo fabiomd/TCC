@@ -25,3 +25,17 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-memory (node)
+	(with-slots (operator name index) node
+		(let ((memory-node (make-instance 'memory-node
+			:operator operator
+			:name name
+			:index index
+			)))
+			memory-node
+		)
+	)
+)

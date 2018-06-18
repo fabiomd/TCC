@@ -25,3 +25,17 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-table (node)
+	(with-slots (operator name typeop) node
+		(let ((table-node (make-instance 'table-node
+			:operator operator
+			:name name
+			:typeop typeop
+			)))
+			table-node
+		)
+	)
+)

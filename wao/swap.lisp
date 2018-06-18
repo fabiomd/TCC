@@ -16,36 +16,62 @@
 ; 	)
 ; )
 
-(defvar actions (list 'SWAP 'RM 'ADD))
-
-(defun mutate (node)
-	(let ((pos (length actions)))
-		(let ((action (nth (random pos) actions)))
-			(apply-action node action)
-		)
+; ****************************************************************************************************
+(defun swap-typeop (typeop)
+	(let ((new-value (choose-new-value typeop (append *i-value-types* *f-value-types*))))
+		new-value
 	)
 )
-
-(defun swap (node)
+; ****************************************************************************************************
+(defun swap-operator (operator typeop)
+	(cond ((string= (write-to-string typeop) "I32")
+		(let ((i32-value (choose-new-value operator *i-32-operators*)))
+			i32-value))
+		  ((string= (write-to-string typeop) "I64")
+		(let ((i64-value (choose-new-value operator *i-64-operators*)))
+			i64-value))
+		  ((string= (write-to-string typeop) "F32")
+		(let ((f32-value (choose-new-value operator *f-32-operators*)))
+			f32-value))
+		  ((string= (write-to-string typeop) "F64")
+		(let ((f64-value (choose-new-value operator *f-64-operators*)))
+			f64-value))
+	)
 )
 
 ; ****************************************************************************************************
-(defun swap-typeop (typeop)
-	(let ((newValue (choose-new-value typeop (append *i-value-types* *f-value-types*))))
-		newValue
+(defun swap-convert (typeop-in operator typeop-out)
+	(let ((new-value (choose-new-value operator *convert-operators*)))
+		new-value
+	)
+)
+; ****************************************************************************************************
+
+(defun adapt-operator (operator typeop)
+	(cond ((string= (write-to-string typeop) "I32")
+		(if (find (string-downcase operator) *i-32-operators* :test #'equal)
+			operator
+			(swap-operator operator typeop)
+		))
+		  ((string= (write-to-string typeop) "I64")
+		(if (find (string-downcase operator) *i-64-operators* :test #'equal)
+			operator
+			(swap-operator operator typeop)
+		))
+		  ((string= (write-to-string typeop) "F32")
+		(if (find (string-downcase operator) *f-32-operators* :test #'equal)
+			operator
+			(swap-operator operator typeop)
+		))
+		  ((string= (write-to-string typeop) "F64")
+		(if (find (string-downcase operator) *f-64-operators* :test #'equal)
+			operator
+			(swap-operator operator typeop)
+		))
 	)
 )
 
-; *i-32-operators*
-(defun swap-operator (operator typeop)
-	(cond ((eql typeop I32))
-	)
-	(let ((newValue (choose-new-value operator (append ))))
-	)
-)
-; ***************************************************************************************************
-
-
+; ****************************************************************************************************
 (defun apply-action (tree action)
 	(let ((func-nodes '()))
 		(loop for node in tree do

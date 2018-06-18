@@ -16,45 +16,58 @@
     (make-instance (type-of webassembly)
       :fitness fitness
       :testtable testtable
-      :genome genome)))
+      :genome (copy-module genome))))
 
 (defmethod crossover (webassembly-software-A webassembly-software-B)
+	webassembly-software-A
 	; (notification (format t "crossover ~a ~a" webassembly-software-A webassembly-software-B))
-	(notification "crossover")
-	(let ((nodeA (draw-node (slot-value webassembly-software-A 'genome))))
-		(let ((nodeB (draw-node (slot-value webassembly-software-B 'genome))))
-			; (print nodeA)
-			; (print nodeB)
-			(let ((nodeTemp (cons
-			    (if (listp (car nodeB))
-			    	(car nodeB) 
-			    	(list (car nodeB))
-			    ) 
-				; (car nodeB) 
-				(cdr nodeA))))
-				; (print nodeTemp)
-				(with-slots (fitness testtable genome) webassembly-software-A
-					; (print "antes")
-					; (print genome)
-					(let ((temp-webassembly-software (copy webassembly-software-A)))
-						(setf (slot-value temp-webassembly-software 'genome)
-							(replacenode (slot-value temp-webassembly-software 'genome) (car nodeTemp) (car (cdr nodeTemp)))
+	; (notification "crossover")
+	; (let ((nodeA (draw-node (slot-value webassembly-software-A 'genome))))
+	; 	(let ((nodeB (draw-node (slot-value webassembly-software-B 'genome))))
+	; 		; (print nodeA)
+	; 		; (print nodeB)
+	; 		(let ((nodeTemp (cons
+	; 		    (if (listp (car nodeB))
+	; 		    	(car nodeB) 
+	; 		    	(list (car nodeB))
+	; 		    ) 
+	; 			; (car nodeB) 
+	; 			(cdr nodeA))))
+	; 			; (print nodeTemp)
+	; 			(with-slots (fitness testtable genome) webassembly-software-A
+	; 				; (print "antes")
+	; 				; (print genome)
+	; 				(let ((temp-webassembly-software (copy webassembly-software-A)))
+	; 					(setf (slot-value temp-webassembly-software 'genome)
+	; 						(replacenode (slot-value temp-webassembly-software 'genome) (car nodeTemp) (car (cdr nodeTemp)))
+	; 					)
+	; 				; (print "depois")
+	; 				; (print (slot-value temp-webassembly-software 'genome))
+	; 				temp-webassembly-software
+	; 				)
+	; 			)
+	; 		)
+	; 	)
+	; )
+)
+
+(defmethod mutate (webassembly-software-A)
+	(let ((code-copy (copy webassembly-software-A)))
+		(let ((module (slot-value code-copy 'genome)))
+			(let ((tempCODE (slot-value module 'body)))
+			    (let ((node (car (get-nodes-with-type tempCODE 'func-node))))
+			    	(if (webassembly-mutate node)
+			    		(progn
+			    			(print (retrieve-code module))
+							code-copy
 						)
-					; (print "depois")
-					; (print (slot-value temp-webassembly-software 'genome))
-					temp-webassembly-software
+						(t (error-notification "mutation has failed"))
 					)
-				)
+			    )
 			)
 		)
 	)
 )
-
-(defmethod mutate (webassembly-software-A)
-	; (notification (format t "mutate ~a" webassembly-software-A))
-	(notification "mutate")
-	webassembly-software-A
-  )
 
 ; ****************************************************************************************************
 ; SHELL SCRIPTS

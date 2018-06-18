@@ -140,16 +140,103 @@
 ; ****************************************************************************************************
 
 ; GIVE A LIST OF OPTIONS, CHOOSE A NEW VALUE, IF THERES NOT ENOUGH OPTIONS, RETURN THE OLDVALUE
-(defun choose-new-value (oldValue options)
+(defun choose-new-value (old-value options)
 	(if (< (length options) 2)
-		oldValue
+		old-value
 		(let ((pos (random (- (length options) 1))))
-			(let ((newValue (nth pos options)))
-				(if (eql oldValue newValue)
-					(setf newValue (nth (+ pos 1) options))
+			(let ((new-value (nth pos options)))
+				(if (eql old-value new-value)
+					(setf new-value (nth (+ pos 1) options))
 				)
-				newValue
+				new-value
 			)
 		)
 	)
+)
+
+(defun choose (node)
+	(let ((pos (random (length node))))
+		(cons (nth pos node) pos)
+	)
+)
+
+(defun choose-by-chances (chances)
+	(let ((temp-chances 0.0))
+		(loop for chance in chances do
+			(setf temp-chances (+ temp-chances chance))
+		)
+		(let ((temp-chance (random temp-chances))
+			  (temp 0.0))
+			(loop for pos from 0 to (length chances) do
+				(setf temp (nth pos chances))
+				(if (< temp-chance temp)
+					(return pos)
+				)
+				(setf temp-chance (- temp-chance temp))
+			)
+		)
+	)
+)
+
+; ****************************************************************************************************
+; NODES UTILS
+; ****************************************************************************************************
+
+
+(defun get-nodes-with-type (nodes node-type)
+	(let ((temp '()))
+		(loop for node in nodes do
+			(if (eql (type-of node) node-type)
+				(setf temp (append temp (list node)))
+			)
+		)
+		temp
+	)
+)
+
+(defun has-type (results symbol)
+	(loop for result in results do
+		(if (eql (slot-value result 'typesym) (slot-value symbol 'typesym))
+			t
+		)
+	)
+	nil
+)
+
+; ****************************************************************************************************
+
+; FALAR SOBRE A CHANCE DE EXPANCAO NA MONOGRAFIA, MODIFICAR VALORES PARA TESTE
+; NON TERMINAL EXPRESSIONS
+(defvar operator-deeper-chance  0.60)
+(defvar convert-deeper-chance   0.60)
+; TERMINAL EXPRESSIONS
+(defvar get-local-deeper-chance 0.00)
+
+(defun deeper-chance (node)
+	(print node)
+	(cond ((eql (type-of node) 'operator-node)
+	      	   operator-deeper-chance)
+	      ((eql (type-of node) 'get-local-node)
+		       get-local-deeper-chance)
+	      ((eql (type-of node) 'convert-node)
+	      	   convert-deeper-chance)
+		  (t (error-notification "undefined deeper node chance"))
+    )
+)
+
+(defun deeper (node)
+	(> (random 1.0) (deeper-chance node))
+)
+
+; ****************************************************************************************************
+
+(defun get-type-from-node (node webassembly-symbol-tables)
+	(cond ((eql (type-of node) 'operator-node)
+		       (slot-value node 'typeop))
+	      ((eql (type-of node) 'get-local-node)
+		       (get-type-from-name (slot-value node 'name) webassembly-symbol-tables))
+	      ((eql (type-of node) 'convert-node)
+	      	   (slot-value node 'typeopout))
+		  (t (error-notification "undefined node type from"))
+    )
 )

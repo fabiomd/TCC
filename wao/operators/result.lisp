@@ -22,3 +22,16 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-result (node)
+	(with-slots (operator typeop) node
+		(let ((result-node (make-instance 'result
+			:operator operator
+			:typeop typeop
+			)))
+			result-node
+		)
+	)
+)

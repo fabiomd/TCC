@@ -13,7 +13,7 @@
 			(let ((conversor (make-instance 'conversor-node
 				:typeopin  (car temp)
 				:operator  (car temp2)
-				:typeopout (cdar temp2))))
+				:typeopout (cadr temp2))))
 				(let ((temp-parameters '()))
 					(setf temp-parameters (expand-body (cdr wat-code)))
 					(setf (slot-value conversor 'parameters) temp-parameter)
@@ -28,13 +28,33 @@
 
 (defun retrieve-conversor (node)
 	(let ((code ""))
-		(with-slots (typeop operator parameters) node
-			(setf code (concatenate 'string code "(" (format-typeop typeop) "." (format-operator operator) " "))
-			(loop for temp in parameters do
-				(setf code (concatenate 'string code " " (retrieve-body temp)))
+		(with-slots (typeopin operator typeopout parameters) node
+			(let ((op (concatenate 'string typeopin "\." operator "\/" typeopout)))
+				(setf code (concatenate 'string code "(" (string-downcase op) " "))
+				(setf code (concatenate 'string code " " (retrieve-body parameters)))
+				(setf code (concatenate 'string code ")"))
+				code
 			)
-			(setf code (concatenate 'string code ")"))
-			code
+		)
+	)
+)
+
+; ****************************************************************************************************
+
+(defun copy-conversor (node)
+	(with-slots (typeopin operator typeopout parameters) node
+		(let ((temp-parameters '()))
+			(loop for parameter in parameters do
+				(setf temp-parameters (append temp-parameters (copy-body (list parameter))))
+			)
+			(let ((conversor-node (make-instance 'conversor-node
+				:typeopin typeopin
+				:operator operator
+				:typeopout typeopout
+				:parameters temp-parameters
+				)))
+				conversor-node
+			)
 		)
 	)
 )

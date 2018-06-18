@@ -27,3 +27,21 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-func (node)
+	(with-slots (operator name signature body) node
+		(let ((signature-node (copy-signatures signature))
+			  (body-nodes (copy-body body)))
+			(let ((func-node (make-instance 'func-node
+				:operator operator
+				:name name
+				:signature signature-node
+				:body body-nodes
+				)))
+				func-node
+			)
+		)
+	)
+)

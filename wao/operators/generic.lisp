@@ -2,3 +2,14 @@
 
 (defclass node ()
   ((operator    :initarg :operator    :accessor operator    :initform nil)))
+
+(defun is-node (node)
+	(cond ((eql (type-of node) 'operator-node)
+		T)
+		((eql (type-of node) 'get-local-node)
+			T)
+		((eql (type-of node) 'convert-node)
+			T)
+		(T nil)
+	)
+)

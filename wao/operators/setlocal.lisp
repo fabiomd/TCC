@@ -23,3 +23,16 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-set-local (node)
+	(with-slots (operator name) node
+		(let ((set-local-node (make-instance 'set-local-node
+			:operator operator
+			:name name
+			)))
+			set-local-node
+		)
+	)
+)

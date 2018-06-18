@@ -29,3 +29,17 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun copy-export (node)
+	(with-slots (operator name scope) node
+		(let ((export-node (make-instance 'export-node
+			:operator operator
+			:name name
+			:scope scope
+			)))
+			export-node
+		)
+	)
+)
