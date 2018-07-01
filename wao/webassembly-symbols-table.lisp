@@ -20,8 +20,9 @@
 (defun get-expected-outputs (table)
 	(let ((expected-outputs '()))
 		(with-slots (results) table
-			(setf expected-outputs (append expected-outputs results))
-			expected-outputs
+			results
+			; (setf expected-outputs (append expected-outputs results))
+			; expected-outputs
 		)
 	)
 )

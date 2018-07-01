@@ -18,43 +18,43 @@
                                                          "webassembly-symbols-table"))
                (:file "mutate"              :depends-on ("utils" 
                                                          "webassembly-symbols-table"))
-               (:file "operators/generic"   :depends-on ("utils"))
-               (:file "operators/module"    :depends-on ("utils" 
-                                                         "operators/generic"))
-               (:file "operators/scope"     :depends-on ("utils" 
-                                                         "operators/generic"))
-               (:file "operators/table"     :depends-on ("utils" 
-                                                         "operators/generic"))
-               (:file "operators/memory"    :depends-on ("utils" 
-                                                         "operators/generic"))
-               (:file "operators/export"    :depends-on ("utils" 
-                                                         "operators/generic" 
-                                                         "operators/scope"))
-               (:file "operators/signature" :depends-on ("utils" 
-                                                         "operators/generic"))
-               (:file "operators/param"     :depends-on ("utils" 
-                                                         "operators/signature"))
-               (:file "operators/result"    :depends-on ("utils" 
-                                                         "operators/signature"))
-               (:file "operators/body"      :depends-on ("utils" 
-                                                         "operators/signature"))
-               (:file "operators/operator"  :depends-on ("utils" 
-                                                         "operators/signature" 
-                                                         "operators/body"))
-               (:file "operators/conversor" :depends-on ("utils" 
-                                                         "operators/generic"))
-               (:file "operators/convert"   :depends-on ("utils" 
-                                                         "operators/conversor"))
-               (:file "operators/getlocal"  :depends-on ("utils" 
-                                                         "operators/signature"))
-               (:file "operators/func"      :depends-on ("utils" 
-                                                         "operators/generic" 
-                                                         "operators/signature" 
-                                                         "operators/body"))
+               (:file "nodes/generic"   :depends-on ("utils"))
+               (:file "nodes/module"    :depends-on ("utils" 
+                                                         "nodes/generic"))
+               (:file "nodes/scope"     :depends-on ("utils" 
+                                                         "nodes/generic"))
+               (:file "nodes/table"     :depends-on ("utils" 
+                                                         "nodes/generic"))
+               (:file "nodes/memory"    :depends-on ("utils" 
+                                                         "nodes/generic"))
+               (:file "nodes/export"    :depends-on ("utils" 
+                                                         "nodes/generic" 
+                                                         "nodes/scope"))
+               (:file "nodes/signature" :depends-on ("utils" 
+                                                         "nodes/generic"))
+               (:file "nodes/param"     :depends-on ("utils" 
+                                                         "nodes/signature"))
+               (:file "nodes/result"    :depends-on ("utils" 
+                                                         "nodes/signature"))
+               (:file "nodes/body"      :depends-on ("utils" 
+                                                         "nodes/signature"))
+               (:file "nodes/operator"  :depends-on ("utils" 
+                                                         "nodes/signature" 
+                                                         "nodes/body"))
+               (:file "nodes/conversor" :depends-on ("utils" 
+                                                         "nodes/generic"))
+               (:file "nodes/convert"   :depends-on ("utils" 
+                                                         "nodes/conversor"))
+               (:file "nodes/getlocal"  :depends-on ("utils" 
+                                                         "nodes/signature"))
+               (:file "nodes/func"      :depends-on ("utils" 
+                                                         "nodes/generic" 
+                                                         "nodes/signature" 
+                                                         "nodes/body"))
                (:file "expand"   :depends-on ("utils" 
-                                              "operators/generic"))
+                                              "nodes/generic"))
                (:file "retrieve" :depends-on ("utils" 
-                                              "operators/generic"))
+                                              "nodes/generic"))
                (:file "software-evolution-adapter" :depends-on ("package" 
                                                                 "expand" 
                                                                 "retrieve"

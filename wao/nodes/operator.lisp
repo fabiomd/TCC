@@ -10,8 +10,9 @@
 	(let ((operator (make-operator (write-to-string (car wat-code)))))
 		(let ((temp-parameters '()))
 			(loop for param in (cdr wat-code) do
-				(setf temp-parameters (append temp-parameters (list (expand-body (list param)))))
+				(setf temp-parameters (append temp-parameters (expand-body (list param))))
 			)
+			(print temp-parameters)
 			(setf (slot-value operator 'parameters) temp-parameters)
 		)
 		operator
@@ -25,7 +26,7 @@
 		(with-slots (typeop operator parameters) node
 			(setf code (concatenate 'string code "(" (format-typeop typeop) "." (format-operator operator)))
 			(loop for temp in parameters do
-				(setf code (concatenate 'string code " " (retrieve-body temp)))
+				(setf code (concatenate 'string code " " (retrieve-body (list temp))))
 			)
 			(setf code (concatenate 'string code ")"))
 			code
@@ -39,7 +40,7 @@
 	(with-slots (typeop operator parameters) node
 		(let ((temp-parameters '()))
 			(loop for parameter in parameters do
-				(setf temp-parameters (append temp-parameters (list (copy-body parameter))))
+				(setf temp-parameters (append temp-parameters (copy-body (list parameter))))
 			)
 			(let ((operator-node (make-instance 'operator-node
 				:typeop typeop
@@ -110,7 +111,7 @@
 				(make-instance 'operator-node
 					:typeop (read-from-string (car temp-type))
 					:operator (read-from-string (car temp-operator))
-					:parameters (list temp-parameters)
+					:parameters temp-parameters
 				)
 			)
 		)
@@ -124,5 +125,24 @@
 )
 
 (defun get-operator-parameters (node)
+	; (let ((parameters-node '()))
+	; 	(loop for parameter in (slot-value node 'parameters) do
+	; 		(setf parameters-node (append parameters-node parameter))
+	; 	)
+	; 	parameters-node
+	; 	; (slot-value node 'parameters)
+	; )
 	(slot-value node 'parameters)
+)
+
+(defun get-operator-parameters-formated (node)
+	(let ((parameters-node '()))
+		(loop for parameter in (slot-value node 'parameters) do
+			(setf parameters-node (append parameters-node parameter))
+		)
+		parameters-node
+		; (let ((choosen (choose parameters-node)))
+		; 	(cdr choosen)
+		; )
+	)
 )

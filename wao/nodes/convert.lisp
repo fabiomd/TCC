@@ -92,7 +92,7 @@
 ; ****************************************************************************************************
 
 (defun generate-convert (webassembly-symbol-table node)
-	(let ((choosen (choose (car (get-expected-outputs webassembly-symbol-table)))))
+	(let ((choosen (choose (get-expected-outputs webassembly-symbol-table))))
 		(let ((type-out (get-type-from-symbol (car choosen)))
 			  (type-in  (get-node-return-type (car node) webassembly-symbol-table)))
 		    ; (print "TYPES")

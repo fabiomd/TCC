@@ -40,7 +40,7 @@
 ; ****************************************************************************************************
 
 (defun generate-get-local (webassembly-symbol-table)
-	(let ((choosen-output (choose (car (get-expected-outputs webassembly-symbol-table)))))
+	(let ((choosen-output (choose (get-expected-outputs webassembly-symbol-table))))
 		(let ((type-out (get-type-from-symbol (car choosen-output))))
 			(let ((options (filter-symbols-for-type (get-availables-inputs webassembly-symbol-table) type-out)))
 				(let ((choosen-input (choose options)))
