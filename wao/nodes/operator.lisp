@@ -12,6 +12,7 @@
 			(loop for param in (cdr wat-code) do
 				(setf temp-parameters (append temp-parameters (expand-body (list param))))
 			)
+			(print "EXPAND OPERATOR")
 			(print temp-parameters)
 			(setf (slot-value operator 'parameters) temp-parameters)
 		)

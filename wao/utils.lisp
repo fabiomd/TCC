@@ -155,8 +155,11 @@
 )
 
 (defun choose (node)
-	(let ((pos (random (length node))))
-		(cons (nth pos node) pos)
+	(if (eql (length node) 0)
+			(cons '() 0)
+		(let ((pos (random (length node))))
+				(cons (nth pos node) pos)
+		)
 	)
 )
 
@@ -213,6 +216,7 @@
 (defvar get-local-deeper-chance 0.00)
 
 (defun deeper-chance (node)
+	(print "DEEPER CHANCE")
 	(print node)
 	(cond ((eql (type-of node) 'operator-node)
 	      	   operator-deeper-chance)
@@ -220,6 +224,8 @@
 		       get-local-deeper-chance)
 	      ((eql (type-of node) 'convert-node)
 	      	   convert-deeper-chance)
+	      ((eql '() node)
+	      	0.00)
 		  (t (error-notification "undefined deeper node chance"))
     )
 )
