@@ -63,8 +63,6 @@
 (defun generate-body (webassembly-symbol-table subnodes)
 	(let ((chances (list generate-operator-chance generate-get-local-chance)))
 		(let ((pos (choose-by-chances chances)))
-			(print "POS")
-			(print pos)
 			(cond ((eql pos 0)
 					(generate-operator webassembly-symbol-table subnodes))
 				  ((eql pos 1)
