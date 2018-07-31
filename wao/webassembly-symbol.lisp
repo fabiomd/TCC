@@ -10,8 +10,6 @@
 ; ****************************************************************************************************
 
 (defun copy-webassembly-symbols (symbols)
-	(print "SYMBOLS")
-	(print symbols)
 	(let ((temp-symbols '()))
 		(loop for symbol in symbols do
 			(if (eql (type-of symbol) 'webassembly-symbol)

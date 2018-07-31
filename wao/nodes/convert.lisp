@@ -92,22 +92,20 @@
 ; ****************************************************************************************************
 
 (defun generate-convert (webassembly-symbol-table node)
-	(print "CONVERT")
 	(let ((choosen (choose (get-expected-outputs webassembly-symbol-table))))
 		(let ((type-out (get-type-from-symbol (car choosen)))
-			  (type-in  (get-node-return-type node webassembly-symbol-table)))
-		    ; (print "TYPES")
-		    ; (print type-out)
-		    ; (print type-in)
-		    ; (print "END TYPES")
+			  (type-in  (get-node-return-type node webassembly-symbol-table))
+			  (choosen-convert-operator (choose *convert-operators*)))
 			(if (check-convert-in-out type-in type-out)
-				(make-instance 'convert-node
-					:typeopin type-in
-					:typeopout type-out
-					:operator (read-from-string (choose *convert-operators*))
-					:parameters node
+				(let ((convert-node (make-instance 'convert-node
+										:typeopin (format-typeop type-in)
+										:typeopout (format-typeop type-out)
+										:operator (car choosen-convert-operator)
+										:parameters (list node)
+									)))
+					convert-node
 				)
-				(car node)
+				node
 			)
 		)
 	)
@@ -116,7 +114,7 @@
 ; ****************************************************************************************************
 
 (defun get-convert-return-type (node)
-	(intern (slot-value node 'typeopout))
+	(slot-value node 'typeopout)
 )
 
 (defun get-convert-parameters (node)

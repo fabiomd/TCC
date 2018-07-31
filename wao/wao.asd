@@ -14,11 +14,17 @@
                (:file "utils")
                (:file "webassembly-symbol")
                (:file "webassembly-symbols-table"       :depends-on ("webassembly-symbol"))
+               (:file "adapt"               :depends-on ("utils" 
+                                                         "webassembly-symbols-table"))
                (:file "swap"                :depends-on ("utils" 
                                                          "webassembly-symbols-table"))
-               (:file "mutate"              :depends-on ("utils" 
+               (:file "mutate"              :depends-on ("utils"
+                                                         "adapt" 
                                                          "webassembly-symbols-table"))
-               (:file "nodes/generic"   :depends-on ("utils"))
+               (:file "crossover"              :depends-on ("utils"
+                                                         "adapt"))
+               (:file "nodes/generic"   :depends-on ("utils"
+                                                     "adapt"))
                (:file "nodes/module"    :depends-on ("utils" 
                                                          "nodes/generic"))
                (:file "nodes/scope"     :depends-on ("utils" 
@@ -59,6 +65,7 @@
                                                                 "expand" 
                                                                 "retrieve"
                                                                 "mutate"
+                                                                "crossover"
                                                                 "swap"))
       			   (:file "wao-core" :depends-on ("package"
                                               "globals"

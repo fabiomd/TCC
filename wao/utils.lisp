@@ -1,5 +1,6 @@
 (in-package #:wao)
 
+; (setf *random-state* (make-random-state t))
 ; ****************************************************************************************************
 ; FILE UTILS
 ; ****************************************************************************************************
@@ -13,6 +14,13 @@
 ; ****************************************************************************************************
 ; FORMAT UTILS
 ; ****************************************************************************************************
+
+(defun format-symbol-type (symbol)
+	(if (stringp symbol)
+		(read-from-string symbol)
+		symbol
+	)
+)
 
 (defun format-operator (operator)
 	(let ((string-op (string-downcase (write-to-string operator))))
@@ -121,17 +129,22 @@
 
 
 ; DRAW A RANDOM NODE AND RETURN IT WITH ITS PATH
-(defun draw-node (tree)
-	(if (listp tree)
-		(let ((pos (random (+ (length tree) 1))))
-			(if (= pos (length tree))
-				(list tree (length tree))
-				(let ((answer (draw-node (nth pos tree))))
-					(list (car answer) (apply #'append (list pos) (cdr answer)))
+(defun draw-node (node)
+	(if (deeper node)
+		(let (sub-nodes (get-node-parameters node))
+			(if (> (length sub-nodes) 0)
+				(let ((choosen (choose sub-nodes)))
+					(if (> (length (car choosen)) 0)
+						(let ((temp-node (draw-node (caar choosen))))
+							temp-node
+						)
+						node
+					)
 				)
+				node
 			)
 		)
-		(list tree 1)
+		node
 	)
 )
 
@@ -216,8 +229,6 @@
 (defvar get-local-deeper-chance 0.00)
 
 (defun deeper-chance (node)
-	(print "DEEPER CHANCE")
-	(print node)
 	(cond ((eql (type-of node) 'operator-node)
 	      	   operator-deeper-chance)
 	      ((eql (type-of node) 'get-local-node)
@@ -231,7 +242,7 @@
 )
 
 (defun deeper (node)
-	(> (random 1.0) (deeper-chance node))
+	(> (deeper-chance node) (random 1.0))
 )
 
 ; ****************************************************************************************************

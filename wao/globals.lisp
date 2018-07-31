@@ -34,4 +34,3 @@
 (defvar *trunc-operators*          (list "trunc_s" "trunc_u")   "webassembly trunc type")
 (defvar *extend-operators*         (list "extend_s" "extend_u") "webassembly extend type")
 (defvar *convert-operators*        (list "convert_u" "convert_s")   "webassembly convert type")
-

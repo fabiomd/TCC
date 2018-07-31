@@ -12,8 +12,6 @@
 			(loop for param in (cdr wat-code) do
 				(setf temp-parameters (append temp-parameters (expand-body (list param))))
 			)
-			(print "EXPAND OPERATOR")
-			(print temp-parameters)
 			(setf (slot-value operator 'parameters) temp-parameters)
 		)
 		operator
@@ -105,14 +103,20 @@
 				  ((string= (string-upcase (car temp-type)) "F64")
 				(setf temp-operator (choose *f-64-operators*)))
 			)
-			(let ((temp-parameters '()))
+			(let ((temp-parameters '())
+				   (webassembly-symbol-table-copy (copy-webassembly-symbols-table webassembly-symbol-table)))
+				(set-results webassembly-symbol-table-copy (create-result-symbol-from-type (read-from-string (car temp-type))))
 				(loop for i from 0 to 1 do
-					(setf temp-parameters (append temp-parameters (list (generate-body webassembly-symbol-table subnodes))))
+					(setf temp-parameters (append temp-parameters (list (generate-body webassembly-symbol-table-copy subnodes))))
 				)
-				(make-instance 'operator-node
-					:typeop (read-from-string (car temp-type))
-					:operator (read-from-string (car temp-operator))
-					:parameters temp-parameters
+				(let ((new-operator-node (make-instance 'operator-node
+											:typeop (read-from-string (car temp-type))
+											:operator (read-from-string (car temp-operator))
+											:parameters temp-parameters
+										)))
+				     (let ((adapted-node (adapt-node new-operator-node temp-operator webassembly-symbol-table)))
+				     	adapted-node
+				     )
 				)
 			)
 		)

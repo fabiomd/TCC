@@ -1,21 +1,5 @@
 (in-package #:wao)
 
-; (defun swap (wat-code)
-; 	(let ((body-node '()))
-; 		(loop for body in wat-code do
-; 			(cond ((check-operator (write-to-string (car body)))
-; 				     (setf body-node (append body-node (list (expand-operator body)))))
-; 				  ((string= "GET_LOCAL" (car body))
-; 				     (setf body-node (append body-node (list (expand-get-local body)))))
-; 				  ((check-convert (write-to-string (car body)))
-; 				  	 (setf body-node (append body-node (list (expand-convert body)))))
-; 				  (t (error-notification "undefined body operator"))
-; 		    )
-; 		)
-; 		body-node
-; 	)
-; )
-
 ; ****************************************************************************************************
 (defun swap-typeop (typeop)
 	(let ((new-value (choose-new-value typeop (append *i-value-types* *f-value-types*))))

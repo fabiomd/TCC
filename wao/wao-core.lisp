@@ -71,7 +71,7 @@
 
 (run "add.wasm")
 
-(evolve #'test :max-evals 100) 
+(evolve #'test :max-evals 1000) 
 
 ; (print (slot-value *original* 'genome))
 ; (let ((module (generate-dependecy-graph (slot-value *original* 'genome))))

@@ -21,8 +21,6 @@
 	(let ((expected-outputs '()))
 		(with-slots (results) table
 			results
-			; (setf expected-outputs (append expected-outputs results))
-			; expected-outputs
 		)
 	)
 )
@@ -42,7 +40,7 @@
 ; ****************************************************************************************************
 
 (defun get-type-from-symbol (symbol)
-	(slot-value symbol 'typesym)
+	(format-symbol-type (slot-value symbol 'typesym))
 )
 
 ; ****************************************************************************************************
