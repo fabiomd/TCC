@@ -13,7 +13,12 @@
   (error "must specify a positive infinity value"))
 
 (defun config (wasm)
-  (setf *fitness-shell-path* "benchmark/fitness.sh")
+  (progress-notification "creating temp content")
+  (ensure-directories-exist *watcode-path*)
+  (ensure-directories-exist *wasmcode-path*)
+  (setf *fitness-shell-path*      "ShellScripts/test.sh"
+        *wat-to-wasm-shell-path*  "ShellScripts/wat2wasm.sh"
+        *fitness-js-path*         "benchmark/fitness.js")
 	(let ((temp (webassembly-fitness *fitness-shell-path* wasm)))
     (let ((genome (get-wat-file-s-expression (concatenate 'string *original-file-path*))))
       (progress-notification "reading original")
@@ -51,7 +56,18 @@
 
 
 (defun test (webassembly-software-A)
-    (notification "fitness")
+    (print "FITNESS")
+    (let ((id (slot-value webassembly-software-A 'id))
+          (module (slot-value webassembly-software-A 'genome)))
+      (print "ID")
+      (print id)
+      (let ((content (retrieve-code module)))
+        (let ((file (save-file *watcode-path* (write-to-string id) *wat-extension* content)))
+          (print "FILE")
+          (print file)
+        )
+      )
+    )
     (let ((test-table (slot-value webassembly-software-A 'testtable)))
       (let ((fitness 0))
           (loop for x in test-table do
@@ -65,13 +81,17 @@
                 (progn 
                   (setf fitness (+ fitness (parse-integer(caddr temp))))))
               )
-            ) fitness))
+            ) 
+          (print fitness)
+          fitness))
     ; (testtable-fitness (slot-value webassembly-software-A 'testtable))
 )
 
 (run "add.wasm")
 
-(evolve #'test :max-evals 1000) 
+(evolve #'avaliate-code :max-evals 10) 
+
+; (compile-wat-to-wasm "G821")
 
 ; (print (slot-value *original* 'genome))
 ; (let ((module (generate-dependecy-graph (slot-value *original* 'genome))))

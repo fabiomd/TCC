@@ -11,6 +11,20 @@
 	  (read file))
 )
 
+(defun save-file (path name extension content)
+	(let ((file-path (concatenate 'string path name extension)))
+		(with-open-file (stream file-path 
+			                    :direction :output
+	                            :if-does-not-exist :create
+	                            :if-exists :overwrite)
+	      (format stream content))
+	)
+)
+
+(defun generate-symbol () 
+	(intern (symbol-name (gensym)))
+)
+
 ; ****************************************************************************************************
 ; FORMAT UTILS
 ; ****************************************************************************************************

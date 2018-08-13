@@ -8,7 +8,11 @@
 (defclass webassembly-software (software)
   ((fitness   :initarg :fitness   :accessor fitness   :initform nil)
    (testtable :initarg :testtable :accessor testtable :initform nil)
-   (genome    :initarg :genome    :accessor genome    :initform nil)))
+   (genome    :initarg :genome    :accessor genome    :initform nil)
+   (id        :initarg :id        :accessor id        :initform (generate-symbol))))
+
+
+; ****************************************************************************************************
 
  ; COPY METHOD RECEIVES A SOFTWARE AND CREATE A COPY OF IT
 (defmethod copy ((webassembly webassembly-software))
@@ -18,6 +22,9 @@
       :testtable testtable
       :genome (copy-module genome))))
 
+; ****************************************************************************************************
+
+; CROSSOVER METHOD RECEIVES TWO OBJECTS AND RETURN A NEW ONE
 (defmethod crossover (webassembly-software-A webassembly-software-B)
 	(print "CROSSOVER")
 	(let ((code-copy (copy webassembly-software-A)))
@@ -40,6 +47,9 @@
 	)
 )
 
+; ****************************************************************************************************
+
+; MUTATE METHOD RECEIVES ONE OBJECT AN RETURN A NEW ONE
 (defmethod mutate (webassembly-software-A)
 	(print "MUTATE")
 	(let ((code-copy (copy webassembly-software-A)))
@@ -60,13 +70,53 @@
 )
 
 ; ****************************************************************************************************
+
+(defun avaliate-code (webassembly-software)
+	(print "FITNESS")
+	(with-slots (id genome) webassembly-software
+		(let ((content (retrieve-code genome)))
+			; SAVE FILE
+			(let ((file (save-file *watcode-path* (write-to-string id) *wat-extension* content)))
+			; GET GENERATED CODE PATH
+			  (let ((filepath (concatenate 'string *watcode-path* (write-to-string id) *wat-extension*)))
+			  ; COMPILE WAT CODE
+				  (let ((compiled (compile-wat-to-wasm (write-to-string id))))
+				  	   (print compiled)
+				; CALCULATE THE FITNESS
+					  (let ((fitness (webassembly-fitness *fitness-shell-path* filepath)))
+					      (print fitness)
+					      (car fitness)
+				      )
+			      )
+		      )
+	      )
+		)
+	)
+)
+
+; ****************************************************************************************************
 ; SHELL SCRIPTS
 ; ****************************************************************************************************
 
-; CALL THE SHELL SCRIPT AND RECEIVES IT OUTPUT
+; CALL THE COMPILE SHELL SCRIPT AND RECEIVES IT OUTPUT
+(defun compile-wat-to-wasm (webassembly-code-id)
+	(let ((compiler-output-stream (make-string-output-stream))
+		  (wat-path (concatenate 'string "." *watcode-path* webassembly-code-id *wat-extension*))
+		  (wasm-path (concatenate 'string "." *wasmcode-path* webassembly-code-id *wasm-extension*)))
+	    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
+								:output compiler-output-stream
+								:error :output 
+								:error-output 
+							  	:lines :ignore-error-status t)
+	    (let ((result (get-output-stream-string compiler-output-stream)))
+	    	(print result)
+		    (block nil (return result))))
+)
+
+; CALL THE TEST SHELL SCRIPT AND RECEIVES IT OUTPUT
 (defun webassembly-testsuite (test-script webassembly-wat-path)
 	(let ((fitness-output-stream (make-string-output-stream)))
-	    (uiop:run-program  (concatenate 'string "sh" " " test-script " " webassembly-wat-path) 
+	    (uiop:run-program  (concatenate 'string "sh " test-script " " webassembly-wat-path " " *fitness-js-path*) 
 								:output fitness-output-stream
 								:error :output 
 								:error-output 
@@ -100,7 +150,8 @@
 
 ; PRINT THE OBJECTS OF THE SOFTWARE
 (defmethod print-software ((webassembly webassembly-software))
-    (with-slots (fitness testtable genome) webassembly
+    (with-slots (id fitness testtable genome) webassembly
+    	  (print id)
 	      (print fitness)
 	      (print testtable)
 	      (print genome)))
@@ -131,7 +182,3 @@
 		(error-notification "require module")
 	)
 )
-
-; ****************************************************************************************************
-; MUTATE HELPER
-; ****************************************************************************************************
