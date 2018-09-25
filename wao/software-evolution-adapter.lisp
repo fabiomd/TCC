@@ -78,14 +78,17 @@
 			; SAVE FILE
 			(let ((file (save-file *watcode-path* (write-to-string id) *wat-extension* content)))
 			; GET GENERATED CODE PATH
-			  (let ((filepath (concatenate 'string *watcode-path* (write-to-string id) *wat-extension*)))
+			  (let ((filepath (concatenate 'string *watcode-path* (write-to-string id) *wat-extension*))
+			  	    (wasmfilepath (concatenate 'string *wasmcode-path* (write-to-string id) *wasm-extension*)))
 			  ; COMPILE WAT CODE
 				  (let ((compiled (compile-wat-to-wasm (write-to-string id))))
-				  	   (print compiled)
 				; CALCULATE THE FITNESS
-					  (let ((fitness (webassembly-fitness *fitness-shell-path* filepath)))
-					      (print fitness)
-					      (car fitness)
+				      (if compiled
+						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
+						      (print (car fitness))
+						      (car fitness)
+					      )
+					      worst
 				      )
 			      )
 		      )
@@ -109,14 +112,13 @@
 								:error-output 
 							  	:lines :ignore-error-status t)
 	    (let ((result (get-output-stream-string compiler-output-stream)))
-	    	(print result)
 		    (block nil (return result))))
 )
 
 ; CALL THE TEST SHELL SCRIPT AND RECEIVES IT OUTPUT
-(defun webassembly-testsuite (test-script webassembly-wat-path)
+(defun webassembly-testsuite (test-script webassembly-wasm-path)
 	(let ((fitness-output-stream (make-string-output-stream)))
-	    (uiop:run-program  (concatenate 'string "sh " test-script " " webassembly-wat-path " " *fitness-js-path*) 
+	    (uiop:run-program  (concatenate 'string "sh ./" test-script " ./" *fitness-js-path* " " webassembly-wasm-path) 
 								:output fitness-output-stream
 								:error :output 
 								:error-output 
@@ -126,8 +128,8 @@
 )
 
 ; CALLS THE FUNCTION TO GENERATE THE SUIT-TABLE AND CALCULATES ITS FITNESS
-(defun webassembly-fitness (test-script webassembly-wat-path)
-	(let ((result (webassembly-testsuite test-script webassembly-wat-path)))
+(defun webassembly-fitness (test-script webassembly-wasm-path)
+	(let ((result (webassembly-testsuite test-script webassembly-wasm-path)))
 		(let ((test-table (split-sequence:SPLIT-SEQUENCE #\Newline result :remove-empty-subseqs t)))
 		(let ((fitness 0))
 			(loop for x in test-table do
@@ -139,7 +141,7 @@
 								  (error-notification "has failed")
 								  (block nil (return (list (worst) test-table))))))
 						(progn 
-						  (setf fitness (+ fitness (parse-integer(caddr temp))))))
+						  (setf fitness (+ fitness (parse-fitness(caddr temp))))))
 					)
 				)
 		(block nil (return (list fitness test-table)))))))

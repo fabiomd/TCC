@@ -44,7 +44,7 @@
   )
 )
 
-(setf *original-file-path* "benchmark/testsuite/add.wat")
+(setf *original-file-path* "benchmark/original.wat")
 
 (defun run (wasm)
   (format t "~%")
@@ -56,7 +56,7 @@
 
 
 (defun test (webassembly-software-A)
-    (print "FITNESS")
+    (print "TEST FITNESS")
     (let ((id (slot-value webassembly-software-A 'id))
           (module (slot-value webassembly-software-A 'genome)))
       (print "ID")
