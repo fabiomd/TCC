@@ -55,6 +55,8 @@
 			      	    (set-results sub-webassembly-symbols-table (create-result-symbol-from-type (get-local-return-type node sub-webassembly-symbols-table))))
 			      ((eql (type-of node) 'convert-node)
 			      	    (set-results sub-webassembly-symbols-table (create-result-symbol-from-type (get-convert-return-type node))))
+			      ((eql (type-of node) 'set-local-node)
+			      	    (set-results sub-webassembly-symbols-table (create-result-symbol-from-type (set-local-return-type))))
 				  (t (error-notification "undefined action body"))
 		    )
 	    )

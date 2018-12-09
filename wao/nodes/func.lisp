@@ -9,10 +9,12 @@
 ; ****************************************************************************************************
 
 (defun expand-func (wat-code)
-	(let ((funcNode (make-instance 'func-node)))
+	(let ((funcNode (make-instance 'func-node))
+		(signatures (get-signatures-by-identifiers wat-code (list 'PARAM 'RESULT)))
+		(body (get-signatures-did-not-match-identifiers wat-code (list 'PARAM 'RESULT))))
 		(setf (slot-value funcNode 'name)      (car wat-code)
-			  (slot-value funcNode 'signature) (expand-signatures (cdr (rm-last-element wat-code)))
-			  (slot-value funcNode 'body)      (expand-body       (list (nth (- (length wat-code) 1) wat-code))))
+			  (slot-value funcNode 'signature) (expand-signatures signatures)
+			  (slot-value funcNode 'body)      (expand-body       body))
 		funcNode
 	)
 )

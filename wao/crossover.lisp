@@ -1,4 +1,4 @@
-	(in-package #:wao)
+(in-package #:wao)
 
 (defun webassembly-crossover (nodeA nodeB)
 	(let ((new-node (apply-crossover nodeA nodeB)))
@@ -42,12 +42,3 @@
 		nodeB
 	)
 )
-
-; (let ((origin-type (get-node-return-type origin-node webassembly-symbols-table)))
-; 	  (let ((adapted-node (adapt-node (car choosen) origin-type webassembly-symbols-table)))
-; 	  	  (if adapted-node
-; 	    	  adapted-node
-; 	    	  origin-node
-;     	  )
-; 	  )
-; )

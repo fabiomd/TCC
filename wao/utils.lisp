@@ -233,6 +233,41 @@
 	)
 )
 
+(defun get-signatures-by-identifiers (nodes node-ids)
+	(let ((temp '()))
+		(loop for node in nodes do
+			(if (listp node)
+				(loop for id in node-ids do
+					(if (eql (car node) id)
+						(setf temp (append temp (list node)))
+					)
+				)
+			)
+		)
+		temp
+	)
+)
+
+(defun get-signatures-did-not-match-identifiers (nodes node-ids)
+	(let ((temp '()))
+		(loop for node in nodes do
+			(if (listp node)
+				(let ((match-node nil))
+					(loop for id in node-ids do
+						(if (eql (car node) id)
+							(setf match-node t)
+						)
+					)
+					(if (not match-node)
+						(setf temp (append temp (list node)))
+					)
+				)
+			)
+		)
+		temp
+	)
+)
+
 (defun has-type (results symbol)
 	(loop for result in results do
 		(if (eql (slot-value result 'typesym) (slot-value symbol 'typesym))
@@ -240,6 +275,34 @@
 		)
 	)
 	nil
+)
+
+; ****************************************************************************************************
+
+(defun get-wat-code-with-type (wat-code wat-type)
+	(let ((temp '()))
+		(loop for node in nodes do
+			(if (eql (type-of node) node-type)
+				(setf temp (append temp (list node)))
+			)
+		)
+		temp
+	)
+	(let ((match-code '()))
+		(loop for body in wat-code do
+			(cond ((check-operator (write-to-string (car body)))
+				     (setf body-node (append body-node (list (expand-operator body)))))
+				  ((string= "GET_LOCAL" (car body))
+				     (setf body-node (append body-node (list (expand-get-local body)))))
+				  ((string= "SET_LOCAL" (car body))
+				     (setf body-node (append body-node (list (expand-set-local body)))))
+				  ((check-convert (write-to-string (car body)))
+				  	 (setf body-node (append body-node (list (expand-convert body)))))
+				  (t (error-notification "undefined body expand method"))
+		    )
+		)
+		body-node
+	)
 )
 
 ; ****************************************************************************************************
@@ -258,9 +321,7 @@
 		       get-local-deeper-chance)
 	      ((eql (type-of node) 'convert-node)
 	      	   convert-deeper-chance)
-	      ((eql '() node)
-	      	0.00)
-		  (t (error-notification "undefined deeper node chance"))
+		  (t 0.00)
     )
 )
 

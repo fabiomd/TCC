@@ -45,6 +45,12 @@
 
 ; ****************************************************************************************************
 
+(defun generate-symbol-name ()
+	(write-to-string (generate-symbol))
+)
+
+; ****************************************************************************************************
+
 (defun filter-symbols-for-type (symbols typesym)
 	(let ((match-symbols '()))
 		(loop for symbol in symbols do
@@ -71,8 +77,16 @@
 
 ; ****************************************************************************************************
 
+(defun add-globals (table globals)
+	(setf (slot-value table 'globals) (append (slot-value table 'globals) globals))
+)
+
 (defun add-locals (table locals)
 	(setf (slot-value table 'locals) (append (slot-value table 'locals) locals))
+)
+
+(defun add-params (table params)
+	(setf (slot-value table 'params) (append (slot-value table 'params) params))
 )
 
 (defun set-results (table results)
