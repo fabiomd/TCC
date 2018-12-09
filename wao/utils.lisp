@@ -25,6 +25,14 @@
 	(intern (symbol-name (gensym)))
 )
 
+(defun generate-type () 
+	(let ((options (append *i-value-types* *f-value-types*)))
+		(let ((chosen (choose options)))
+			(car chosen)
+		)
+	)
+)
+
 ; ****************************************************************************************************
 ; FORMAT UTILS
 ; ****************************************************************************************************
@@ -155,7 +163,7 @@
 (defun draw-node (node)
 	(if (deeper node)
 		(let (sub-nodes (get-node-parameters node))
-			(if (> (length sub-nodes) 0)
+			(if (and (listp sub-nodes) (> (length sub-nodes) 0))
 				(let ((choosen (choose sub-nodes)))
 					(if (> (length (car choosen)) 0)
 						(let ((temp-node (draw-node (caar choosen))))
@@ -296,6 +304,8 @@
 				     (setf body-node (append body-node (list (expand-get-local body)))))
 				  ((string= "SET_LOCAL" (car body))
 				     (setf body-node (append body-node (list (expand-set-local body)))))
+				  ((string= "LOCAL" (car body))
+				     (setf body-node (append body-node (list (expand-local body)))))
 				  ((check-convert (write-to-string (car body)))
 				  	 (setf body-node (append body-node (list (expand-convert body)))))
 				  (t (error-notification "undefined body expand method"))
@@ -303,6 +313,17 @@
 		)
 		body-node
 	)
+)
+
+(defun get-value-type (value)
+	(cond ((stringp value)
+      	   (t (error-notification "string type is not supported yet")))
+      ((integerp value)
+	       (nth (- (length *i-value-types*) 1) *i-value-types*))
+      ((floatp value)
+	       (nth (- (length *f-value-types*) 1) *f-value-types*))
+	  (t (error-notification "undefined type"))
+    )
 )
 
 ; ****************************************************************************************************
@@ -313,6 +334,8 @@
 (defvar convert-deeper-chance   0.60)
 ; TERMINAL EXPRESSIONS
 (defvar get-local-deeper-chance 0.00)
+(defvar set-local-deeper-chance 0.60)
+(defvar local-deeper-chance 0.00)
 
 (defun deeper-chance (node)
 	(cond ((eql (type-of node) 'operator-node)
@@ -321,6 +344,10 @@
 		       get-local-deeper-chance)
 	      ((eql (type-of node) 'convert-node)
 	      	   convert-deeper-chance)
+	      ((eql (type-of node) 'set-local-node)
+	      	   set-local-deeper-chance)
+	      ((eql (type-of node) 'local-node)
+	      	   local-deeper-chance)
 		  (t 0.00)
     )
 )
@@ -338,6 +365,8 @@
 		       (get-type-from-name (slot-value node 'name) webassembly-symbol-tables))
 	      ((eql (type-of node) 'convert-node)
 	      	   (slot-value node 'typeopout))
+	      ((eql (type-of node) 'local-node)
+	      	   (slot-value node 'typeop))
 		  (t (error-notification "undefined node type from"))
     )
 )

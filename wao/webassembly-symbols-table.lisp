@@ -17,6 +17,25 @@
 	)
 )
 
+(defun get-availables-locals (table)
+	(let ((available-inputs '()))
+		(with-slots (locals) table
+			(setf available-inputs (append available-inputs locals))
+			available-inputs
+		)
+	)
+)
+
+(defun get-availables-globals (table)
+	(let ((available-inputs '()))
+		(with-slots (globals) table
+			(setf available-inputs (append available-inputs globals))
+			available-inputs
+		)
+	)
+)
+
+
 (defun get-expected-outputs (table)
 	(let ((expected-outputs '()))
 		(with-slots (results) table
@@ -41,6 +60,10 @@
 
 (defun get-type-from-symbol (symbol)
 	(format-symbol-type (slot-value symbol 'typesym))
+)
+
+(defun get-name-from-symbol (symbol)
+	(format-symbol-type (slot-value symbol 'name))
 )
 
 ; ****************************************************************************************************
@@ -90,5 +113,9 @@
 )
 
 (defun set-results (table results)
-	(setf (slot-value table 'results) (list results))
+	(let ((typesym (slot-value results 'typesym)))
+		(if (not (find (string-downcase typesym) *void-types* :test #'equal))
+			(setf (slot-value table 'results) (list results))
+		)
+	)
 )

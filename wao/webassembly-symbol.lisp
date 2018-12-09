@@ -47,6 +47,8 @@
 				(setf symbols (append symbols (list (create-symbol-from-param node)))))
 				  ((eql (type-of node) 'result)
 				(setf symbols (append symbols (list (create-symbol-from-result node)))))
+				  ((eql (type-of node) 'set-local-node)
+				(setf symbols (append symbols (list (create-symbol-from-local node)))))
 			)
 		)
 		symbols
@@ -65,6 +67,15 @@
 (defun create-symbol-from-result (node)
 	(with-slots (typeop) node
 		(make-instance 'webassembly-result-symbol
+			:typesym typeop
+		)
+	)
+)
+
+(defun create-symbol-from-local (node)
+	(with-slots (name typeop) node
+		(make-instance 'webassembly-symbol
+			:name name
 			:typesym typeop
 		)
 	)

@@ -11,26 +11,17 @@
 	(let ((set-local-node (make-instance 'set-local-node)))
 		(let ((name (nth 1 wat-code)))
 			(setf (slot-value set-local-node 'name) 
-				(if (stringp name)
-					(read-from-string name)
-					name
-				)
+				name
 			)
 		)
-		(let ((code-param (nth 2 wat-code))
+		(let ((code-param (list (nth 2 wat-code)))	
 			(temp-parameters '()))
-			(if (and (listp code-param) (> (length code-param) 0))
-				(progn
-					(loop for param in code-param do
-						(print param)
-						(setf temp-parameters (append temp-parameters (expand-body (list param))))
-					)
-					(setf (slot-value set-local-node 'parameters) temp-parameters)
-				)
-				(setf (slot-value set-local-node 'parameters) code-param)
+			(loop for param in code-param do
+				(setf temp-parameters (append temp-parameters (expand-body (list param))))
 			)
+			(setf (slot-value set-local-node 'parameters) temp-parameters)
+			set-local-node
 		)
-		set-local-node
 	)
 )
 
@@ -44,7 +35,7 @@
 				(loop for temp in parameters do
 					(setf code (concatenate 'string code " " (retrieve-body (list temp))))
 				)
-				(setf code (concatenate 'string code " " parameters))
+				(setf code (concatenate 'string code " " (format-name parameters)))
 			)
 			(setf code (concatenate 'string code ")"))
 			code
@@ -57,14 +48,21 @@
 (defun generate-set-local (webassembly-symbol-table sub-nodes)
 	(let ((temp-parameters '())
 		   (webassembly-symbol-table-copy (copy-webassembly-symbols-table webassembly-symbol-table)))
-		(loop for i from 0 to 1 do
-			(setf temp-parameters (append temp-parameters (list (generate-body webassembly-symbol-table-copy subnodes))))
+		(loop for i from 0 to 0 do
+			(setf temp-parameters (append temp-parameters (list (generate-body webassembly-symbol-table-copy sub-nodes))))
 		)
-		(let ((new-set-local-node (make-instance 'set-local-node
-									:name (generate-symbol-name)
-									:parameters temp-parameters
-								)))
-			new-set-local-node		      
+		(let ((availables-locals (get-availables-locals webassembly-symbol-table)))
+			(if (> (length availables-locals) 0)
+				(let ((chosen (choose availables-locals)))
+					(let ((new-set-local-node (make-instance 'set-local-node
+												:name (get-name-from-symbol (car chosen))
+												:parameters temp-parameters
+											)))
+						new-set-local-node		      
+					)
+				)
+				nil
+			)
 		)
 	)
 )
@@ -74,11 +72,8 @@
 (defun copy-set-local (node)
 	(with-slots (operator name parameters) node
 		(let ((temp-parameters '()))
-			(if (listp parameters)
-				(loop for parameter in parameters do
-					(setf temp-parameters (append temp-parameters (copy-body (list parameter))))
-					(setf temp-parameters parameters)
-				)
+			(loop for parameter in parameters do
+				(setf temp-parameters (append temp-parameters (copy-body (list parameter))))
 			)
 			(let ((set-local-node (make-instance 'set-local-node
 				:operator operator

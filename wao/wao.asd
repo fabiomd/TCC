@@ -53,6 +53,8 @@
                                                          "nodes/signature"))
                (:file "nodes/setlocal"  :depends-on ("utils" 
                                                          "nodes/signature"))
+               (:file "nodes/local"     :depends-on ("utils" 
+                                                         "nodes/signature"))
                (:file "nodes/func"      :depends-on ("utils" 
                                                          "nodes/generic" 
                                                          "nodes/signature" 

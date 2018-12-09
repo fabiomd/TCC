@@ -10,6 +10,8 @@
 			T)
 		((eql (type-of node) 'convert-node)
 			T)
+		((eql (type-of node) 'set-local-node)
+			T)
 		(T nil)
 	)
 )
