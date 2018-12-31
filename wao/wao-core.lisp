@@ -39,8 +39,22 @@
             ; *tournament-eviction-size* 2
             ; *actions* (list #'add #'rm #'swap)
     		    *population* (loop :for n :below *max-population-size* :collect (copy *original*)))
+      (config-original-body-sizes)
       (done-notification)
     )
+  )
+)
+
+(defun config-original-body-sizes ()
+  (let ((original-module (slot-value *original* 'genome)))
+      (let ((tempCODE (slot-value original-module 'body)))
+          (setf *count-body-nodes* '())
+          (loop for func in (get-nodes-with-type tempCODE 'func-node) do
+              (let ((body (slot-value func 'body)))
+                  (setf *count-body-nodes* (append *count-body-nodes* (list (count-body-nodes body))))
+              )
+          )
+      )
   )
 )
 

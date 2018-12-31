@@ -74,7 +74,8 @@
 (defun avaliate-code (webassembly-software)
 	(print "FITNESS")
 	(with-slots (id genome) webassembly-software
-		(let ((content (retrieve-code genome)))
+		(let ((content (retrieve-code genome))
+			  (size (code-size webassembly-software)))
 			; SAVE FILE
 			(let ((file (save-file *watcode-path* (write-to-string id) *wat-extension* content)))
 			; GET GENERATED CODE PATH
@@ -85,8 +86,7 @@
 				; CALCULATE THE FITNESS
 				      (if compiled
 						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
-						      (print (car fitness))
-						      (car fitness)
+						  	  (+ (car fitness) (fitness-size-bonus size))
 					      )
 					      worst
 				      )
@@ -95,6 +95,31 @@
 	      )
 		)
 	)
+)
+
+(defun fitness-size-bonus (code-size)
+	(let ((counter 0.0))
+		(loop for i from 0 to (- (length code-size) 1) do
+			(setf counter (+ counter 
+				(* (- (nth i *count-body-nodes*) (nth i code-size)) 0.001))
+			)
+		)
+		counter
+	)
+)
+
+(defun code-size (webassembly-software)
+	(let ((code-module (slot-value webassembly-software 'genome)))
+      (let ((tempCODE (slot-value code-module 'body)))
+          (setf counter '())
+          (loop for func in (get-nodes-with-type tempCODE 'func-node) do
+              (let ((body (slot-value func 'body)))
+                  (setf counter (append counter (list (count-body-nodes body))))
+              )
+          )
+          counter
+      )
+  )
 )
 
 ; ****************************************************************************************************

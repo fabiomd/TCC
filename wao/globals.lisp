@@ -14,6 +14,7 @@
 ; ADAPTER VARIABLES
 (defvar *original-file-path*      nil "path to original file")
 (defvar *original*                nil "original software")
+(defvar *original-body-size*      nil "size of original function bodys")
 (defvar *fitness-js-path*         nil "fitness node javascript path")
 (defvar *fitness-shell-path*      nil "path to fitness shell script")
 (defvar *wat-to-wasm-shell-path*  nil "path to wat compiler shell script")

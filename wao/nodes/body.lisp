@@ -132,3 +132,20 @@
 		  (t (car *void-types*))
     )
 )
+
+
+(defun count-body-nodes (nodes)
+	(if (listp nodes)
+		(let ((counter 1))
+			(loop for node in nodes do
+				(let ((parameters (get-node-parameters node)))
+					(loop for param in parameters do
+						(setf counter (+ counter 1 (count-body-nodes param)))
+					)
+				)
+			)
+			counter
+		)
+		1
+	)
+)

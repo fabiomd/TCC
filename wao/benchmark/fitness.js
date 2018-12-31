@@ -40,7 +40,6 @@ async.parallel({
     }, function(errOfIntances, resultsOfIntances) {
         console.log("error : " + (errOfIntances ? true : false));
         console.log("sumtwo : " + accuracyOfIntanceIntOrFloat(resultsOfIntances.sumtwo));
-        console.log("codesize : " + accuracyOfIntanceIntOrFloat(resultsOfIntances.sumtwo));
     });
 });
 
