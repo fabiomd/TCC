@@ -42,6 +42,9 @@
                                                          "nodes/signature"))
                (:file "nodes/body"      :depends-on ("utils" 
                                                          "nodes/signature"))
+               (:file "nodes/block"     :depends-on ("utils" 
+                                                         "nodes/generic"
+                                                         "nodes/body"))
                (:file "nodes/operator"  :depends-on ("utils" 
                                                          "nodes/signature" 
                                                          "nodes/body"))
@@ -58,7 +61,8 @@
                (:file "nodes/func"      :depends-on ("utils" 
                                                          "nodes/generic" 
                                                          "nodes/signature" 
-                                                         "nodes/body"))
+                                                         "nodes/body"
+                                                         "nodes/block"))
                (:file "expand"   :depends-on ("utils" 
                                               "nodes/generic"))
                (:file "retrieve" :depends-on ("utils" 

@@ -28,7 +28,7 @@
 (defun generate-type () 
 	(let ((options (append *i-value-types* *f-value-types*)))
 		(let ((chosen (choose options)))
-			(car chosen)
+			(read-from-string (car chosen))
 		)
 	)
 )
@@ -89,6 +89,15 @@
            (loop for l on list
                  while (rest l)
                  collect (first l)))
+
+(defun rm-nth (n list)
+	(let ((startIndex (1- n)))
+		(if (< startIndex 0)
+			(setf startIndex 0)
+		)
+	  (remove-if (constantly t) list :start startIndex :count 1)
+	)
+)
 
 ; ****************************************************************************************************
 ; MESSAGE UTILS

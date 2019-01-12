@@ -34,12 +34,12 @@
 				  (tempCODE-B (slot-value module-B 'body)))
 			    (let ((choosen-A (choose (get-nodes-with-type tempCODE-A 'func-node)))
 			    	  (node-B (get-nodes-with-type tempCODE-B 'func-node)))
-			    	(if (webassembly-crossover (car choosen-A) (nth (cdr choosen-A) node-B))
+			    	(let ((crossover (webassembly-crossover (car choosen-A) (nth (cdr choosen-A) node-B))))
 			    		(progn
 			    			(print (retrieve-code module-A))
 							code-copy
 						)
-						(t (error-notification "crossover has failed"))
+						; (t (error-notification "crossover has failed"))
 					)
 			    )
 			)
@@ -56,12 +56,12 @@
 		(let ((module (slot-value code-copy 'genome)))
 			(let ((tempCODE (slot-value module 'body)))
 			    (let ((node (car (choose (get-nodes-with-type tempCODE 'func-node)))))
-			    	(if (webassembly-mutate node)
+			    	(let ((mutation (webassembly-mutate node)))
 			    		(progn
 			    			(print (retrieve-code module))
 							code-copy
 						)
-						(t (error-notification "mutation has failed"))
+						; (t (error-notification "mutation has failed"))
 					)
 			    )
 			)
@@ -86,7 +86,10 @@
 				; CALCULATE THE FITNESS
 				      (if compiled
 						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
-						  	  (+ (car fitness) (fitness-size-bonus size))
+						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size))))
+						  	  	(print final-fitness)
+						  	  	final-fitness
+						  	  )
 					      )
 					      worst
 				      )

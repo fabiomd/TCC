@@ -37,7 +37,10 @@
 				       (setf code (concatenate 'string code " " (retrieve-local node))))
 			      ((eql (type-of node) 'convert-node)
 			      	   (setf code (concatenate 'string code " " (retrieve-convert node))))
-				  (t (error-notification "undefined body retrieve method"))
+				  (t (progn 
+				  	(print nodes)
+				  	(print node)
+				  	(error-notification "undefined body retrieve method")))
 		    )
 		)
 		code

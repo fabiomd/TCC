@@ -53,6 +53,7 @@
 				(return (slot-value temp-input 'typesym))
 			)
 		)
+		nil
 	)
 )
 
