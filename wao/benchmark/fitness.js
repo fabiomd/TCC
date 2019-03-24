@@ -16,24 +16,30 @@ async.parallel({
     async.parallel({
         sumtwo: function(parallelCb) {
             try {
-                let firstNumber  = getRandomInt(1,100);
-                let secondNumber = getRandomInt(1,100);
-                let expectedResult = firstNumber + secondNumber;
-                let webAssemblyAddFuncResult = results.sumtwo.instance.exports.sumtwo(firstNumber,secondNumber);
-                parallelCb(null, {
-                    err: false,
-                    result: { 
+                let numberOfTest = 3;
+                var testResults = [];
+                for (var i=0; i < numberOfTest; i++ ) {
+                    let firstNumber  = getRandomInt(-100,100);
+                    let secondNumber = getRandomInt(-100,100);
+                    let expectedResult = firstNumber + secondNumber;
+                    let webAssemblyAddFuncResult = results.sumtwo.instance.exports.sumtwo(firstNumber,secondNumber);
+                    let testResult = { 
                         gotten: webAssemblyAddFuncResult, 
                         expected: expectedResult
-                    }
+                    };
+                    testResults.push(testResult);
+                }
+                parallelCb(null, {
+                    err: false,
+                    results: testResults
                 });
             } catch(error) {
                 parallelCb(error, {
                     err: true, 
-                    result: { 
+                    results: [{ 
                         gotten: null, 
                         expected: null
-                    }
+                    }]
                 });
             }
         }
@@ -76,7 +82,13 @@ function getInstance(arrayBuffer,callback) {
 function accuracyOfIntanceIntOrFloat(body) {
     if(body.err)
         return worstIntResult;
-    return body.result.gotten / body.result.expected;
+    var precision = 0;
+    for (var i=0; i < body.results.length; i++) {
+        let result = body.results[i];
+        let resultPrecision = result.expected == result.gotten ? 1 : 0;
+        precision += resultPrecision;
+    }
+    return precision / body.results.length;
 }
 
 function getRandomInt(min, max) {
