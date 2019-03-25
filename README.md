@@ -1,5 +1,6 @@
 # WAO - WebAssembly Optimizer 
-WAO é um otimizador de codigo em webAssembly, otimizando em questão de numero de instruções.
+WAO é um otimizador de codigo em webAssembly, desenvolvido para otimizar códigos WebAssembly em formato WAT.
+A otimização se da em questão de numero de instruções necessárias para realizar um ou mais tarefas.
 
 ## Instalação
 
