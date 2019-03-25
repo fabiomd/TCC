@@ -1,3 +1,0 @@
-Falar dos padroes requeridos pelo webassembly. WebAssemblyManual 1.1.3
-
-

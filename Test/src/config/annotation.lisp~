@@ -1,5 +1,0 @@
-(in-package :goa)
-
-(defmethod pick-bad ((asm simple)) (pick asm [{+ 0.01} {aget :annotation}]))
-(defmethod pick-bad ((asm ann-range))
-  (proportional-pick (annotations asm) #'identity))
