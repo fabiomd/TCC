@@ -47,16 +47,8 @@
 )
 
 (defun config-original-body-sizes ()
-  (let ((original-module (slot-value *original* 'genome)))
-      (let ((tempCODE (slot-value original-module 'body)))
-          (setf *count-body-nodes* '())
-          (loop for func in (get-nodes-with-type tempCODE 'func-node) do
-              (let ((body (slot-value func 'body)))
-                  (setf *count-body-nodes* (append *count-body-nodes* (list (count-body-nodes body))))
-              )
-          )
-      )
-  )
+  (setf *original-body-nodes* (code-size *original*))
+  (print *original-body-nodes*)
 )
 
 (setf *original-file-path* "benchmark/original.wat")
@@ -68,38 +60,6 @@
 (defun worst ()
   (cond ((equal #'< *fitness-predicate*) 999999)
         ((equal #'> *fitness-predicate*) 0)))
-
-
-(defun test (webassembly-software-A)
-    (print "TEST FITNESS")
-    (let ((id (slot-value webassembly-software-A 'id))
-          (module (slot-value webassembly-software-A 'genome)))
-      (print "ID")
-      (print id)
-      (let ((content (retrieve-code module)))
-        (let ((file (save-file *watcode-path* (write-to-string id) *wat-extension* content)))
-          (print "FILE")
-          (print file)
-        )
-      )
-    )
-    (let ((test-table (slot-value webassembly-software-A 'testtable)))
-      (let ((fitness 0))
-          (loop for x in test-table do
-            (let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
-              (if (string-equal (car temp) "error")
-                (progn
-                  (if (string-equal (car temp) "true")
-                      (progn 
-                      (error-notification "has failed")
-                      (block nil (return (list (worst) test-table))))))
-                (progn 
-                  (setf fitness (+ fitness (parse-integer(caddr temp))))))
-              )
-            ) 
-          (print fitness)
-          fitness))
-)
 
 (run "add.wasm")
 
@@ -118,7 +78,7 @@
       (print "BEST INDIVIDUAL")
       (print id)
       (print fitness)
-      (print (retrieve-code genome))
+      (retrieve-code genome)
     )
   )
 )
@@ -134,7 +94,7 @@
       (print "WORTH INDIVIDUAL")
       (print id)
       (print fitness)
-      (print (retrieve-code genome))
+      (retrieve-code genome)
     )
   )
 )

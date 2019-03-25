@@ -2,9 +2,9 @@
 
 (defvar actions (list "SWAP" "RM" "ADD"))
 (defvar body-nodes (list 'operator-node 'convert-node))
-(defvar swap-chance 0.20)
-(defvar rm-chance 0.70)
-(defvar add-chance 0.10)
+(defvar swap-chance 0.33)
+(defvar rm-chance 0.34)
+(defvar add-chance 0.33)
 
 (defun webassembly-mutate (node)
 	(let ((chances (list swap-chance rm-chance add-chance)))
@@ -96,7 +96,6 @@
 		       	 temp-body
 		       ))
 	      ((string= action "RM")
-	      	(print (length available-nodes))
 	      	   (if (> (length available-nodes) 0)
 		      	   (let ((choosen (choose available-nodes)))
 			      	   	(let ((origin-type (get-node-return-type origin-node webassembly-symbols-table)))

@@ -93,9 +93,9 @@
 (defun rm-nth (n list)
 	(let ((startIndex (1- n)))
 		(if (< startIndex 0)
-			(setf startIndex 0)
+			(remove-if (constantly t) list :start 0 :count 1)
+			(remove-if (constantly t) list :start startIndex :count 1)
 		)
-	  (remove-if (constantly t) list :start startIndex :count 1)
 	)
 )
 

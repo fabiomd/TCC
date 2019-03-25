@@ -141,14 +141,21 @@
 	(if (listp nodes)
 		(let ((counter 1))
 			(loop for node in nodes do
-				(let ((parameters (get-node-parameters node)))
-					(loop for param in parameters do
-						(setf counter (+ counter 1 (count-body-nodes param)))
-					)
-				)
+				(setf counter (+ counter 1 (count-node-parameters node)))
 			)
 			counter
 		)
-		1
+		(count-node-parameters nodes)
+	)
+)
+
+(defun count-node-parameters (node)
+	(let ((counter 1))
+		(let ((parameters (get-node-parameters node)))
+			(loop for param in parameters do
+				(setf counter (+ counter 1 (count-body-nodes param)))
+			)
+		)
+		counter
 	)
 )

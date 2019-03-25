@@ -88,6 +88,7 @@
 						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
 						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size))))
 						  	  	(print final-fitness)
+						  	  	(setf (slot-value webassembly-software 'fitness) final-fitness)
 						  	  	final-fitness
 						  	  )
 					      )
@@ -104,7 +105,7 @@
 	(let ((counter 0.0))
 		(loop for i from 0 to (- (length code-size) 1) do
 			(setf counter (+ counter 
-				(* (- (nth i *count-body-nodes*) (nth i code-size)) 0.001))
+				(* (- (nth i *original-body-nodes*) (nth i code-size)) 0.001))
 			)
 		)
 		counter
@@ -113,16 +114,16 @@
 
 (defun code-size (webassembly-software)
 	(let ((code-module (slot-value webassembly-software 'genome)))
-      (let ((tempCODE (slot-value code-module 'body)))
-          (setf counter '())
-          (loop for func in (get-nodes-with-type tempCODE 'func-node) do
-              (let ((body (slot-value func 'body)))
-                  (setf counter (append counter (list (count-body-nodes body))))
-              )
-          )
-          counter
-      )
-  )
+	    (let ((tempCODE (slot-value code-module 'body)))
+	        (setf counter '())
+	        (loop for func in (get-nodes-with-type tempCODE 'func-node) do
+	            (let ((body (slot-value func 'body)))
+	            	(setf counter (append counter (list (count-body-nodes body))))
+	            )
+	        )
+	        counter
+	    )
+    )
 )
 
 ; ****************************************************************************************************
