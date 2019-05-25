@@ -35,3 +35,13 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun get-result-return-type (node webassembly-symbol-table)
+	(slot-value node 'typeop)
+)
+
+(defun get-result-parameters (node)
+	'()
+)

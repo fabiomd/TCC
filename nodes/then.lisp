@@ -1,21 +1,21 @@
 (in-package #:wao)
 
-(defclass else-node (node)
-  ((operator        :initarg :operator       :accessor operator        :initform 'ELSE)
-   (operatorBlock   :initarg :operatorBlock  :accessor operatorBlock   :initform nil)))
+(defclass then-node (node)
+  ((operator         :initarg :operator           :accessor operator    :initform 'THEN)
+   (operatorBlock    :initarg :operatorBlock      :accessor operatorBlock   :initform nil)))
 
 ; ****************************************************************************************************
 
-(defun expand-else (wat-code)
-	(let ((else-node (make-instance 'else-node)))
-	    (setf (slot-value else-node 'operatorBlock) (expand-block (cdr wat-code)))
-		else-node
+(defun expand-then (wat-code)
+	(let ((then-node (make-instance 'then-node)))
+	    (setf (slot-value then-node 'operatorBlock) (expand-block (cdr wat-code)))
+		then-node
 	)
 )
 
 ; ****************************************************************************************************
 
-(defun retrieve-else (node)
+(defun retrieve-then (node)
 	(let ((code ""))
 		(with-slots (operator operatorBlock) node
 			(setf code (concatenate 'string code "( " + (format-operator operator)))
@@ -28,23 +28,23 @@
 
 ; ****************************************************************************************************
 
-(defun generate-else (webassembly-symbol-table subnodes)
-	(let ((else-node (make-instance 'else-node)))
-		(setf (slot-value else-node 'operatorBlock) (generate-block webassembly-symbol-table subnodes))
+(defun generate-then (webassembly-symbol-table subnodes)
+	(let ((then-node (make-instance 'then-node)))
+		(setf (slot-value then-node 'operatorBlock) (generate-block webassembly-symbol-table subnodes))
 	)
 )
 
 ; ****************************************************************************************************
 
-(defun copy-else (node)
+(defun copy-then (node)
 	(with-slots (operator operatorBlock) node
 		(let ((temp-block nil))
 			(setf temp-block (copy-block operatorBlock))
-			(let ((else-node (make-instance 'else-node
+			(let ((then-node (make-instance 'then-node
 				:operator operator
 				:operatorBlock temp-block
 				)))
-				else-node
+				then-node
 			)
 		)
 	)
@@ -52,10 +52,10 @@
 
 ; ****************************************************************************************************
 
-(defun get-else-return-type (node webassembly-symbol-table)
+(defun get-then-return-type (node webassembly-symbol-table)
 	(block-return-type (slot-value node 'operatorBlock) webassembly-symbol-table)
 )
 
-(defun get-else-parameters (node)
+(defun get-then-parameters (node)
 	(slot-value node 'operatorBlock)
 )

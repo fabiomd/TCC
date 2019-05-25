@@ -48,12 +48,16 @@
                (:file "nodes/operator"                  :depends-on ("utils" 
                                                                      "nodes/signature" 
                                                                      "nodes/body"))
+               (:file "nodes/then"                      :depends-on ("utils" 
+                                                                     "nodes/block" 
+                                                                     "nodes/body"))
                (:file "nodes/else"                      :depends-on ("utils" 
                                                                      "nodes/block" 
                                                                      "nodes/body"))
                (:file "nodes/if"                        :depends-on ("utils" 
                                                                      "nodes/block" 
                                                                      "nodes/body"
+                                                                     "nodes/then"
                                                                      "nodes/else"))
                (:file "nodes/conversor"                 :depends-on ("utils" 
                                                                      "nodes/generic"))
