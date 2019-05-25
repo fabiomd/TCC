@@ -13,6 +13,10 @@
 				     (setf body-node (append body-node (list (expand-set-local body)))))
 				  ((string= "LOCAL" (car body))
 				     (setf body-node (append body-node (list (expand-local body)))))
+				  ((string= "IF" (car body))
+				     (setf body-node (append body-node (list (expand-if body)))))
+				  ((string= "ELSE" (car body))
+				     (setf body-node (append body-node (list (expand-else body)))))
 				  ((check-convert (write-to-string (car body)))
 				  	 (setf body-node (append body-node (list (expand-convert body)))))
 				  (t (error-notification "undefined body expand method"))
@@ -37,6 +41,10 @@
 				       (setf code (concatenate 'string code " " (retrieve-local node))))
 			      ((eql (type-of node) 'convert-node)
 			      	   (setf code (concatenate 'string code " " (retrieve-convert node))))
+			      ((eql (type-of node) 'if-node)
+			      	   (setf code (concatenate 'string code " " (retrieve-if node))))
+			      ((eql (type-of node) 'else-node)
+			      	   (setf code (concatenate 'string code " " (retrieve-else node))))
 				  (t (progn 
 				  	(print nodes)
 				  	(print node)
@@ -62,6 +70,10 @@
 			      	   (setf code (append code (list (copy-local node)))))
 			      ((eql (type-of node) 'convert-node)
 			      	   (setf code (append code (list (copy-convert node)))))
+			      ((eql (type-of node) 'if-node)
+			      	   (setf code (append code (list (copy-if node)))))
+			      ((eql (type-of node) 'else-node)
+			      	   (setf code (append code (list (copy-else node)))))
 				  (t (error-notification "undefined body copy method"))
 		    )
 		)
@@ -72,6 +84,7 @@
 ; ****************************************************************************************************
 
 (defvar generate-operator-chance 0.30)
+(defvar generate-if-chance 0.30)
 (defvar generate-get-local-chance 0.50)
 (defvar generate-set-local-chance 0.20)
 (defvar generate-local-chance 0.20)
@@ -80,7 +93,8 @@
 	(let ((chances (list generate-operator-chance 
 						 generate-get-local-chance 
 						 generate-set-local-chance
-						 generate-local-chance)))
+						 generate-local-chance
+						 generate-if-chance)))
 		(let ((pos (choose-by-chances chances)))
 			(let ((generated-node
 				(cond ((eql pos 0)
@@ -91,6 +105,8 @@
 					  	(generate-set-local webassembly-symbol-table subnodes))
 					  ((eql pos 3)
 					  	(generate-local))
+					  ((eql pos 4)
+					  	(generate-if webassembly-symbol-table subnodes))
 					  (t (error-notification "undefined body generate"))
 				)))
 			    (if generated-node
@@ -115,6 +131,10 @@
 	      	   (get-convert-parameters node))
 	      ((eql (type-of node) 'local-node)
 	      	   (local-parameters))
+	      ((eql (type-of node) 'if-node)
+	      	   (get-if-parameters node))
+	      ((eql (type-of node) 'else-node)
+	      	   (get-else-parameters node))
 		  (t '())
     )
 )
@@ -132,6 +152,10 @@
 	      	   (get-convert-return-type node))
 	      ((eql (type-of node) 'local-node)
 	      	   (local-return-type))
+	      ((eql (type-of node) 'if-node)
+	      	   (if-return-type))
+	      ((eql (type-of node) 'else-node)
+	      	   (else-return-type))
 		  (t (car *void-types*))
     )
 )

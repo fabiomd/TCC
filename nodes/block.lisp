@@ -43,6 +43,15 @@
 
 ; ****************************************************************************************************
 
+(defun generate-block (webassembly-symbol-table subnodes)
+	(let ((block-node (make-instance 'block-node)))
+		(setf (slot-value block-node 'body) (generate-body webassembly-symbol-table subnodes))
+	    block-node
+	)
+)
+
+; ****************************************************************************************************
+
 (defun block-return-type (node webassembly-symbol-table)
 	(let ((type (car *void-types*)))
 		(loop for body-node in (slot-value node 'body) do
