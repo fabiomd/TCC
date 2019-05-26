@@ -18,8 +18,9 @@
 (defun retrieve-else (node)
 	(let ((code ""))
 		(with-slots (operator operatorBlock) node
-			(setf code (concatenate 'string code "( " + (format-operator operator)))
-			(setf code (concatenate 'string code " " + (retrieve-block operatorBlock)))
+			(print (retrieve-block operatorBlock))
+			(setf code (concatenate 'string code "("  (format-operator operator)))
+			(setf code (concatenate 'string code " "  (retrieve-block operatorBlock)))
 			(setf code (concatenate 'string code ")"))
 			code
 		)

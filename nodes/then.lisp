@@ -1,7 +1,7 @@
 (in-package #:wao)
 
 (defclass then-node (node)
-  ((operator         :initarg :operator           :accessor operator    :initform 'THEN)
+  ((operator         :initarg :operator           :accessor operator        :initform 'THEN)
    (operatorBlock    :initarg :operatorBlock      :accessor operatorBlock   :initform nil)))
 
 ; ****************************************************************************************************
@@ -18,8 +18,8 @@
 (defun retrieve-then (node)
 	(let ((code ""))
 		(with-slots (operator operatorBlock) node
-			(setf code (concatenate 'string code "( " + (format-operator operator)))
-			(setf code (concatenate 'string code " " + (retrieve-block operatorBlock)))
+			(setf code (concatenate 'string code "("  (format-operator operator)))
+			(setf code (concatenate 'string code " "  (retrieve-block operatorBlock)))
 			(setf code (concatenate 'string code ")"))
 			code
 		)

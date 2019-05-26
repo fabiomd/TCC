@@ -39,12 +39,14 @@
 (defun retrieve-if (node)
 	(let ((code ""))
 		(with-slots (operator result ifCondition thenOperator elseOperator) node
-			(setf code (concatenate 'string code "( " + (format-operator operator)))
-			(setf code (concatenate 'string code " "  + (retrieve-body result)))
-			(setf code (concatenate 'string code " "  + (retrieve-body ifCondition)))
-			(setf code (concatenate 'string code " "  + (retrieve-body thenOperator)))
+			(print (retrieve-body thenOperator))
+			(print (retrieve-body elseOperator))
+			(setf code (concatenate 'string code "(" (format-operator operator)))
+			(setf code (concatenate 'string code " "  (retrieve-body result)))
+			(setf code (concatenate 'string code " "  (retrieve-body ifCondition)))
+			(setf code (concatenate 'string code " "  (retrieve-body thenOperator)))
 			(if elseOperator
-				(setf code (concatenate 'string code " " + (retrieve-body elseOperator)))
+				(setf code (concatenate 'string code " " (retrieve-body elseOperator)))
 			)
 			(setf code (concatenate 'string code ")"))
 			code

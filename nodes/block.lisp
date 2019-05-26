@@ -18,8 +18,11 @@
 ; ****************************************************************************************************
 
 (defun retrieve-block (node)
+	(print "block")
 	(let ((code ""))
 		(with-slots (body) node
+			(print node)
+			(print body)
 			(setf code (retrieve-body body))
 			code
 		)
