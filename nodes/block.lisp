@@ -18,11 +18,8 @@
 ; ****************************************************************************************************
 
 (defun retrieve-block (node)
-	(print "block")
 	(let ((code ""))
 		(with-slots (body) node
-			(print node)
-			(print body)
 			(setf code (retrieve-body body))
 			code
 		)
@@ -48,7 +45,7 @@
 
 (defun generate-block (webassembly-symbol-table subnodes)
 	(let ((block-node (make-instance 'block-node)))
-		(setf (slot-value block-node 'body) (generate-body webassembly-symbol-table subnodes))
+		(setf (slot-value block-node 'body) (list (generate-body webassembly-symbol-table subnodes)))
 	    block-node
 	)
 )
@@ -60,12 +57,14 @@
 		(loop for body-node in (slot-value node 'body) do
 			(let ((body-return-type (get-node-return-type body-node webassembly-symbol-table)))
 				(if (not (find (string-downcase body-return-type) *void-types*   :test #'equal))
-					(setf type body-return-type)
-					(block nil (return type))
+					(progn
+					    (setf type body-return-type)
+					    (return-from block-return-type type)
+					)
 				)
 			)
 		)
-		(block nil (return type))
+		(return-from block-return-type type)
 	)
 )
 

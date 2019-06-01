@@ -58,7 +58,8 @@
                                                                      "nodes/block" 
                                                                      "nodes/body"
                                                                      "nodes/then"
-                                                                     "nodes/else"))
+                                                                     "nodes/else"
+                                                                     "nodes/result"))
                (:file "nodes/conversor"                 :depends-on ("utils" 
                                                                      "nodes/generic"))
                (:file "nodes/convert"                   :depends-on ("utils" 

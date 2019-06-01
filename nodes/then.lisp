@@ -57,5 +57,5 @@
 )
 
 (defun get-then-parameters (node)
-	(slot-value node 'operatorBlock)
+	(list (slot-value node 'operatorBlock))
 )

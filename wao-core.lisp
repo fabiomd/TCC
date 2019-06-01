@@ -64,7 +64,7 @@
 (run "add.wasm")
 
 (defun evolve-code ()
-  (evolve #'avaliate-code :max-evals 2000) 
+  (evolve #'avaliate-code :max-evals 5000) 
 )
 
 (defun get-best ()

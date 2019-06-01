@@ -39,10 +39,10 @@
 (defun retrieve-if (node)
 	(let ((code ""))
 		(with-slots (operator result ifCondition thenOperator elseOperator) node
-			(print (retrieve-body thenOperator))
-			(print (retrieve-body elseOperator))
 			(setf code (concatenate 'string code "(" (format-operator operator)))
-			(setf code (concatenate 'string code " "  (retrieve-body result)))
+			(if result
+				(setf code (concatenate 'string code " "  (retrieve-body result)))
+			)
 			(setf code (concatenate 'string code " "  (retrieve-body ifCondition)))
 			(setf code (concatenate 'string code " "  (retrieve-body thenOperator)))
 			(if elseOperator
@@ -62,10 +62,14 @@
 			  (temp-condition nil)
 			  (temp-then-operator nil)
 			  (temp-else-operator nil))
-		    (setf temp-result (copy-body result))
+		    (if result
+		    	(setf temp-result (copy-body result))
+		    )
 			(setf temp-condition (copy-body ifCondition))
 			(setf temp-then-operator (copy-body thenOperator))
-			(setf temp-else-operator (copy-body elseOperator))
+			(if elseOperator
+				(setf temp-else-operator (copy-body elseOperator))
+			)
 			(let ((if-node (make-instance 'if-node
 				:result result
 				:operator operator
@@ -82,12 +86,23 @@
 ; ****************************************************************************************************
 
 (defun generate-if (webassembly-symbol-table subnodes)
-	(let ((if-node (make-instance 'if-node)))
-		(setf (slot-value if-node 'ifCondition) (generate-then webassembly-symbol-table subnodes))
-	    (setf (slot-value if-node 'thenOperator) (generate-block webassembly-symbol-table subnodes))
+	(let ((if-node (make-instance 'if-node))
+		  (then-return-type nil)
+		  (else-return-type nil))
+		(setf (slot-value if-node 'ifCondition) (list (generate-body webassembly-symbol-table subnodes)))
+	    (setf (slot-value if-node 'thenOperator) (list (generate-then webassembly-symbol-table subnodes)))
+	    (setf then-return-type (get-node-return-type (slot-value if-node 'thenOperator) webassembly-symbol-table))
 	    (let ((shouldGenerateElse (choose (list 'T nil))))
 	    	(if (cdr shouldGenerateElse)
-	    		(setf (slot-value if-node 'elseOperator) (generate-else webassembly-symbol-table subnodes))
+	    		(setf (slot-value if-node 'elseOperator) (list (generate-else webassembly-symbol-table subnodes)))
+	    		(setf else-return-type (get-node-return-type (slot-value if-node 'elseOperator) webassembly-symbol-table))
+	    	)
+	    	(let ((void-return (find (string-downcase then-return-type) *void-types* :test #'equal)))
+	    		(if (and (not void-return)
+	    		         (not (eql then-return-type nil))
+	    	             (eql then-return-type else-return-type))
+	    	        (setf (slot-value if-node 'result) (generate-result-with-type then-return-type))
+	    	    )
 	    	)
 	    	if-node
 	    )
@@ -106,7 +121,9 @@
 (defun get-if-parameters (node)
 	(with-slots (operator result ifCondition thenOperator elseOperator) node
 		(let ((parameters-node '()))
-			(setf parameters-node (append parameters-node result))
+			(if result
+				(setf parameters-node (append parameters-node result))
+			)
 			(setf parameters-node (append parameters-node ifCondition))
 			(setf parameters-node (append parameters-node thenOperator))
 			(if elseOperator

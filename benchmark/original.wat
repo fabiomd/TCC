@@ -10,8 +10,8 @@
     (set_local $3 (get_local $1))
     (if (result i32)
       (i32.lt_s
-         (get_local $3)
          (get_local $0)
+         (get_local $1)
       )
       (then
          (i32.add

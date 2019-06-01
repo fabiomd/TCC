@@ -18,7 +18,6 @@
 (defun retrieve-else (node)
 	(let ((code ""))
 		(with-slots (operator operatorBlock) node
-			(print (retrieve-block operatorBlock))
 			(setf code (concatenate 'string code "("  (format-operator operator)))
 			(setf code (concatenate 'string code " "  (retrieve-block operatorBlock)))
 			(setf code (concatenate 'string code ")"))
@@ -58,5 +57,5 @@
 )
 
 (defun get-else-parameters (node)
-	(slot-value node 'operatorBlock)
+	(list (slot-value node 'operatorBlock))
 )

@@ -36,9 +36,18 @@
 	)
 )
 
+(defun generate-result-with-type (typeop)
+	(let ((result-node (make-instance 'result
+		:typeop typeop
+		)))
+		result-node
+	)
+)
+
 ; ****************************************************************************************************
 
 (defun get-result-return-type (node webassembly-symbol-table)
+	(print "LOLOLOLOLOLO")
 	(slot-value node 'typeop)
 )
 
