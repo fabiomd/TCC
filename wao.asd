@@ -75,6 +75,11 @@
                                                                      "nodes/signature" 
                                                                      "nodes/body"
                                                                      "nodes/block"))
+               (:file "nodes/call"                      :depends-on ("utils" 
+                                                                     "nodes/func" 
+                                                                     "nodes/body"
+                                                                     "adapt"
+                                                                     "webassembly-symbols-table"))
                (:file "expand"                          :depends-on ("utils" 
                                                                      "nodes/generic"))
                (:file "retrieve"                        :depends-on ("utils" 
@@ -84,7 +89,7 @@
                                                                      "retrieve"
                                                                      "mutate"
                                                                      "crossover"))
-      			   (:file "wao-core"                        :depends-on ("package"
+      			(:file "wao-core"                        :depends-on ("package"
                                                                      "globals"
                                                                      "utils"
                                                                      "software-evolution-adapter"))

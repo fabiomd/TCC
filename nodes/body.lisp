@@ -21,6 +21,8 @@
 				     (setf body-node (append body-node (list (expand-then body)))))
 				  ((string= "ELSE" (car body))
 				     (setf body-node (append body-node (list (expand-else body)))))
+				  ((string= "CALL" (car body))
+				     (setf body-node (append body-node (list (expand-call body)))))
 				  ((check-convert (write-to-string (car body)))
 				  	 (setf body-node (append body-node (list (expand-convert body)))))
 				  (t (error-notification "undefined body expand method"))
@@ -53,6 +55,8 @@
 			      	   (setf code (concatenate 'string code " " (retrieve-then node))))
 			      ((eql (type-of node) 'else-node)
 			      	   (setf code (concatenate 'string code " " (retrieve-else node))))
+			      ((eql (type-of node) 'call-node)
+			      	   (setf code (concatenate 'string code " " (retrieve-call node))))
 			      ((eql (type-of node) 'block-node)
 			      	   (setf code (concatenate 'string code " " (retrieve-block node))))
 				  (t (progn 
@@ -86,6 +90,8 @@
 			      	   (setf code (append code (list (copy-then node)))))
 			      ((eql (type-of node) 'else-node)
 			      	   (setf code (append code (list (copy-else node)))))
+			      ((eql (type-of node) 'call-node)
+			      	   (setf code (append code (list (copy-call node)))))
 			      ((eql (type-of node) 'block-node)
 			      	   (setf code (append code (list (copy-block node)))))
 				  (t (error-notification "undefined body copy method"))
@@ -102,6 +108,7 @@
 (defvar generate-get-local-chance 0.50)
 (defvar generate-set-local-chance 0.20)
 (defvar generate-local-chance 0.20)
+(defvar generate-call-chance 0.05)
 
 (defun generate-body (webassembly-symbol-table subnodes)
 	(let ((chances (list generate-operator-chance 
@@ -121,6 +128,8 @@
 					  	(generate-local))
 					  ((eql pos 4)
 					  	(generate-if webassembly-symbol-table subnodes))
+					  ((eql pos 5)
+					  	(generate-call webassembly-symbol-table subnodes))
 					  (t (error-notification "undefined body generate"))
 				)))
 			    (if generated-node
@@ -153,6 +162,10 @@
 	      	   (get-then-parameters node))
 	      ((eql (type-of node) 'else-node)
 	      	   (get-else-parameters node))
+	      ((eql (type-of node) 'call-node)
+	      	   (get-call-parameters node))
+	      ((eql (type-of node) 'block-node)
+	      	   (get-block-parameters node))
 		  (t '())
     )
 )
@@ -178,6 +191,8 @@
 	      	   (get-then-return-type node webassembly-symbol-table))
 	      ((eql (type-of node) 'else-node)
 	      	   (get-else-return-type node webassembly-symbol-table))
+	      ((eql (type-of node) 'call-node)
+	      	   (get-call-return-type node webassembly-symbol-table))
 		  (t (car *void-types*))
     )
 )
@@ -191,15 +206,15 @@
 			)
 			counter
 		)
-		(count-node-parameters nodes)
+		(+ 1 (count-node-parameters nodes))
 	)
 )
 
 (defun count-node-parameters (node)
-	(let ((counter 1))
+	(let ((counter 0))
 		(let ((parameters (get-node-parameters node)))
 			(loop for param in parameters do
-				(setf counter (+ counter 1 (count-body-nodes param)))
+				(setf counter (+ counter (count-body-nodes param)))
 			)
 		)
 		counter

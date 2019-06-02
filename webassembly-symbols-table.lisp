@@ -1,10 +1,30 @@
 (in-package #:wao)
 
 (defclass webassembly-symbols-table (node)
-  ((globals  :initarg :globals  :accessor globals  :initform '())
-   (params   :initarg :params   :accessor params   :initform '())
-   (locals   :initarg :locals   :accessor locals   :initform '())
-   (results  :initarg :results  :accessor results  :initform '())))
+  ((functions :initarg :functions :accessor functions :initform '())
+   (globals   :initarg :globals   :accessor globals   :initform '())
+   (params    :initarg :params    :accessor params    :initform '())
+   (locals    :initarg :locals    :accessor locals    :initform '())
+   (results   :initarg :results   :accessor results   :initform '())))
+
+(defun populate-availables-functions (nodes webassembly-symbol-table)
+	(let ((function-symbols '()))
+		(loop for node in nodes do
+			(let ((function-symbol (make-instance 'webassembly-function
+				                        :name  (get-func-name node)
+				                        :parameters (get-func-parameters-type node webassembly-symbol-table)
+				                        :resulttype (get-func-return-type node webassembly-symbol-table)
+				                   )))
+			    (setf function-symbols (append function-symbols (list function-symbol)))
+			)
+		)
+		(setf *function-symbols* function-symbols)
+	)
+)
+
+(defun get-availables-functions (table)
+	(slot-value table 'functions)
+)
 
 (defun get-availables-inputs (table)
 	(let ((available-inputs '()))
@@ -89,11 +109,12 @@
 ; ****************************************************************************************************
 
 (defun copy-webassembly-symbols-table (table)
-	(with-slots (globals params locals results) table
+	(with-slots (functions globals params locals results) table
 		(make-instance (type-of table)
+			:functions *function-symbols*
 			:globals (copy-webassembly-symbols globals)
-			:params (copy-webassembly-symbols params)
-			:locals (copy-webassembly-symbols locals)
+			:params  (copy-webassembly-symbols params)
+			:locals  (copy-webassembly-symbols locals)
 			:results (copy-webassembly-symbols results)
 		)
 	)

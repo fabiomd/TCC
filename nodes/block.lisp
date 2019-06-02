@@ -70,6 +70,6 @@
 
 ; ****************************************************************************************************
 
-(defun block-parameters (node)
+(defun get-block-parameters (node)
 	(slot-value node 'body)
 )

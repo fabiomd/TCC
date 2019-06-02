@@ -364,18 +364,3 @@
 (defun deeper (node)
 	(> (deeper-chance node) (random 1.0))
 )
-
-; ****************************************************************************************************
-
-(defun get-type-from-node (node webassembly-symbol-tables)
-	(cond ((eql (type-of node) 'operator-node)
-		       (slot-value node 'typeop))
-	      ((eql (type-of node) 'get-local-node)
-		       (get-type-from-name (slot-value node 'name) webassembly-symbol-tables))
-	      ((eql (type-of node) 'convert-node)
-	      	   (slot-value node 'typeopout))
-	      ((eql (type-of node) 'local-node)
-	      	   (slot-value node 'typeop))
-		  (t (error-notification "undefined node type from"))
-    )
-)

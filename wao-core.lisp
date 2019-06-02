@@ -30,6 +30,13 @@
                     	      :genome genome-dependecy-graph))
       )
       (done-notification)
+      (progress-notification "processing functions")
+      (let ((module (slot-value *original* 'genome)))
+        (let ((tempCODE (slot-value module 'body)))
+           (populate-availables-functions (get-nodes-with-type tempCODE 'func-node) nil)
+        )
+      )
+      (done-notification)
       (progress-notification "populating")
     	(setf *max-population-size* (expt 2 8)
             *evals* (expt 2 18)
@@ -40,6 +47,8 @@
             ; *tournament-eviction-size* 2
             ; *actions* (list #'add #'rm #'swap)
     		    *population* (loop :for n :below *max-population-size* :collect (copy *original*)))
+      (done-notification)
+      (progress-notification "coleting data from genome")
       (config-original-body-sizes)
       (done-notification)
     )
@@ -48,7 +57,6 @@
 
 (defun config-original-body-sizes ()
   (setf *original-body-nodes* (code-size *original*))
-  (print *original-body-nodes*)
 )
 
 (setf *original-file-path* "benchmark/original.wat")

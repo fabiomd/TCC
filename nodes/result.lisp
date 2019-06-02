@@ -47,7 +47,6 @@
 ; ****************************************************************************************************
 
 (defun get-result-return-type (node webassembly-symbol-table)
-	(print "LOLOLOLOLOLO")
 	(slot-value node 'typeop)
 )
 

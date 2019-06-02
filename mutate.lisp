@@ -34,7 +34,7 @@
 		(let ((temp-params  (get-nodes-with-type signature 'param))
 			  (temp-results (get-nodes-with-type signature 'result))
 			  (sub-webassembly-symbols-table (copy-webassembly-symbols-table webassembly-symbols-table))
-			  (block-params (block-parameters body)))
+			  (block-params (get-block-parameters body)))
 		    (let ((chosen (choose block-params)))
 				(let ((temp-locals (get-nodes-with-type (subseq block-params 0 (cdr chosen)) 'local-node)))
 					(with-slots (params locals results) sub-webassembly-symbols-table

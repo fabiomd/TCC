@@ -7,6 +7,11 @@
 (defclass webassembly-result-symbol ()
   ((typesym  :initarg :typesym   :accessor typesym   :initform nil)))
 
+(defclass webassembly-function ()
+  ((name        :initarg :name         :accessor name         :initform nil)
+   (parameters  :initarg :parameters   :accessor parameters   :initform nil)
+   (resulttype  :initarg :resulttype   :accessor resulttype   :initform nil)))
+
 ; ****************************************************************************************************
 
 (defun copy-webassembly-symbols (symbols)

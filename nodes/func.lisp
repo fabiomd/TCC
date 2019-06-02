@@ -47,3 +47,37 @@
 		)
 	)
 )
+
+; ****************************************************************************************************
+
+(defun get-func-name (node)
+	(slot-value node 'name)
+)
+
+; ****************************************************************************************************
+
+(defun get-func-return-type (node webassembly-symbol-table)
+	(with-slots (name signature) node
+		(loop for item in signature do
+			(if (eql (type-of item) 'result)
+				(return-from get-func-return-type (get-result-return-type item webassembly-symbol-table))
+			)
+		)
+		(return-from get-func-return-type (car *void-types*))
+	)
+)
+
+; ****************************************************************************************************
+
+(defun get-func-parameters-type (node webassembly-symbol-table)
+	(let ((parameters '()))
+		(with-slots (name signature) node
+			(loop for item in signature do
+				(if (eql (type-of item) 'param)
+					(setf parameters (append parameters (list (get-param-type item))))
+				)
+		    )
+		    parameters
+	    )
+	)
+)
