@@ -8,7 +8,7 @@
 (defvar *fitness-predicate*        nil "function to compare two fitness values to select which is preferred")
 ; (defvar *cross-chance*           nil "fraction of new individuals generated using crossover rather than mutation")
 ; (defvar *mut-rate*               nil "chance to mutate a new individual")
-; (defvar *fitness-evals*          nil "this variable tracks the total number of fitness evaluations performed")
+(defvar *fitness-evals*          nil "this variable tracks the total number of fitness evaluations performed")
 ; (defvar *running*                nil "true when a search process is running, set this variable to nil to stop a running search")
 
 ; ADAPTER VARIABLES
@@ -24,7 +24,8 @@
 (defvar *actions*                 nil "list of action the system can choose")
 
 ; UTILS VARIABLES
-(defvar *current-step*            0   "current step")
+(defvar *current-step*            0    "current step")
+(defvar *max-avaliations*         9000 "max avaliations")
 
 ; *******************************************************************************************
 (defvar *void-types*              (list "") "webassembly void representation")

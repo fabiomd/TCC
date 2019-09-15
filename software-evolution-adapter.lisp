@@ -6,7 +6,7 @@
 
 ; WEBASSEMBLY SOFTWARE OBJECT
 (defclass webassembly-software (software)
-  ((fitness   :initarg :fitness   :accessor fitness   :initform nil)
+  ((fitness   :initarg :fitness   :accessor fitness   :initform 0)
    (testtable :initarg :testtable :accessor testtable :initform nil)
    (genome    :initarg :genome    :accessor genome    :initform nil)
    (id        :initarg :id        :accessor id        :initform (generate-symbol))))
@@ -73,6 +73,7 @@
 
 (defun avaliate-code (webassembly-software)
 	(print "FITNESS")
+	(check-data)
 	(with-slots (id genome) webassembly-software
 		(let ((content (retrieve-code genome))
 			  (size (code-size webassembly-software)))

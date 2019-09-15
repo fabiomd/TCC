@@ -21,6 +21,16 @@
 	)
 )
 
+(defun add-to-file (path name extension content)
+	(let ((file-path (concatenate 'string path name extension)))
+		(with-open-file (stream file-path 
+			                    :direction :output
+	                            :if-does-not-exist :create
+	                            :if-exists :append)
+	      (format stream content))
+	)
+)
+
 (defun generate-symbol () 
 	(intern (symbol-name (gensym)))
 )
@@ -337,7 +347,6 @@
 
 ; ****************************************************************************************************
 
-; FALAR SOBRE A CHANCE DE EXPANCAO NA MONOGRAFIA, MODIFICAR VALORES PARA TESTE
 ; NON TERMINAL EXPRESSIONS
 (defvar operator-deeper-chance  0.60)
 (defvar convert-deeper-chance   0.60)

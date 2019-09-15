@@ -21,6 +21,7 @@
                                                                      "webassembly-symbols-table"))
                (:file "crossover"                       :depends-on ("utils"
                                                                      "adapt"))
+               (:file "collector"                       :depends-on ("utils"))
                (:file "nodes/generic"                   :depends-on ("utils"
                                                                      "adapt"))
                (:file "nodes/module"                    :depends-on ("utils" 

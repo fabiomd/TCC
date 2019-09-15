@@ -48,7 +48,7 @@
             ; *actions* (list #'add #'rm #'swap)
     		    *population* (loop :for n :below *max-population-size* :collect (copy *original*)))
       (done-notification)
-      (progress-notification "coleting data from genome")
+      (progress-notification "collecting data from genome")
       (config-original-body-sizes)
       (done-notification)
     )
@@ -72,7 +72,7 @@
 (run "add.wasm")
 
 (defun evolve-code ()
-  (evolve #'avaliate-code :max-evals 5000) 
+  (evolve #'avaliate-code :max-evals *max-avaliations*) 
 )
 
 (defun get-best ()
