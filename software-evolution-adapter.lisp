@@ -1,5 +1,4 @@
 (in-package #:wao)
-
 ; ****************************************************************************************************
 ; SOFTWARE EVOLUTION METHODS
 ; ****************************************************************************************************
@@ -145,16 +144,25 @@
 
 ; CALL THE COMPILE SHELL SCRIPT AND RECEIVES IT OUTPUT
 (defun compile-wat-to-wasm (webassembly-code-id)
-	(let ((compiler-output-stream (make-string-output-stream))
-		  (wat-path (concatenate 'string "." *watcode-path* webassembly-code-id *wat-extension*))
-		  (wasm-path (concatenate 'string "." *wasmcode-path* webassembly-code-id *wasm-extension*)))
-	    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
-								:output compiler-output-stream
-								:error :output 
-								:error-output 
-							  	:lines :ignore-error-status t)
-	    (let ((result (get-output-stream-string compiler-output-stream)))
-		    (block nil (return result))))
+	(handler-case
+		(with-timeout *operation-time-limit*
+		  	(progn
+				(let ((compiler-output-stream (make-string-output-stream))
+					  (wat-path (concatenate 'string "." *watcode-path* webassembly-code-id *wat-extension*))
+					  (wasm-path (concatenate 'string "." *wasmcode-path* webassembly-code-id *wasm-extension*)))
+				    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
+											:output compiler-output-stream
+											:error :output 
+											:error-output 
+										  	:lines :ignore-error-status t)
+				    (let ((result (get-output-stream-string compiler-output-stream)))
+					    (block nil (return result))))
+			)
+		)
+		(error (c)
+			(values 0 c)
+		)
+    )
 )
 
 ; CALL THE TEST SHELL SCRIPT AND RECEIVES IT OUTPUT
@@ -173,23 +181,24 @@
 (defun webassembly-fitness (test-script webassembly-wasm-path)
 	(let ((result (webassembly-testsuite test-script webassembly-wasm-path)))
 		(let ((test-table (split-sequence:SPLIT-SEQUENCE #\Newline result :remove-empty-subseqs t)))
-			(print "test-table")
-			(print test-table)
 		(let ((fitness 0))
 			(if test-table
-				(loop for x in test-table do
-					(let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
-						(if (string-equal (car temp) "error")
-							(progn
-							  (if (string-equal (car temp) "true")
-							      (progn 
-									  (error-notification "has failed")
-									  (block nil (return (list (worst) test-table))))))
-							(progn 
-							  (setf fitness (+ fitness (parse-fitness(caddr temp))))
+				(progn
+					(loop for x in test-table do
+						(let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
+							(if (string-equal (car temp) "error")
+								(progn
+								  (if (string-equal (car temp) "true")
+								      (progn 
+										  (error-notification "has failed")
+										  (block nil (return (list (worst) test-table))))))
+								(progn 
+								    (setf fitness (+ fitness (parse-fitness(caddr temp))))
+								)
 							)
 						)
 					)
+					(setf fitness (+ fitness 0.1))
 				)
 				(block nil (return (list (worst) test-table)))
 			)

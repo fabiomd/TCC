@@ -15,10 +15,13 @@ async.parallel({
 }, function(err, results) {
     async.parallel({
         divtwo: function(parallelCb) {
+            var timer;
             try {
-                let numberOfTest = 3;
-                var testResults = [];                
-                timer = setInterval(throw "timeout";, numberOfTest * 1000);
+                let numberOfTest = 5;
+                var testResults = [];
+                timer = setInterval(function() {
+                    throw new UserException("Function Timeout");
+                }, numberOfTest * 1000);
                 for (var i=0; i < numberOfTest; i++ ) {
                     let firstNumber  = getRandomInt(-100,100);
                     var secondNumber = getRandomInt(-100,100);
@@ -43,6 +46,7 @@ async.parallel({
                     results: testResults
                 });
             } catch(error) {
+                clearInterval(timer);
                 parallelCb(error, {
                     err: true, 
                     results: [{ 

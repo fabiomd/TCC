@@ -1,5 +1,5 @@
 (in-package #:wao)
-
+(defvar *operation-time-limit*     5000 "operation time limit value")
 ; SOFTWARE-EVOLUTION-ADAPTER VARIABLES
 (defvar *population*               nil "a list of the software objects currently known to the system. This variable may be read to inspect a running search process, or written to as part of a running search process")
 (defvar *max-population-size*      nil "maximum allowable population size")
@@ -50,7 +50,7 @@
 
 ; *******************************************************************************************
 ; DEBUGGER VARIABLES
-(defvar *crossover-debugger-is-enabled*    'T "crossover debugged flag")
-(defvar *mutation-debugger-is-enabled*     'T "mmutation debugged flag")
-(defvar *fitness-debugger-is-enabled*      'T "fitness debugged flag")
+(defvar *crossover-debugger-is-enabled*    T "crossover debugged flag")
+(defvar *mutation-debugger-is-enabled*     T "mmutation debugged flag")
+(defvar *fitness-debugger-is-enabled*      T "fitness debugged flag")
 (defvar *collector-debugger-is-enabled*    nil "collector debugged flag")

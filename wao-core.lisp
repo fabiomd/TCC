@@ -1,4 +1,3 @@
-
 (in-package #:wao)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
@@ -13,7 +12,9 @@
   (error "must specify a positive infinity value"))
 
 (defun config (wasm)
-  (setf *random-state* (get-key "benchmark/randomKey.txt"))
+  (setf *gensym-counter* 0)
+  ; (setf *random-state* (get-key "benchmark/randomKey.txt")
+  ;       *gensym-counter* 0)
   ; (setf *random-state* (make-random-state t))
   (progress-notification "creating temp content")
   (ensure-directories-exist *watcode-path*)

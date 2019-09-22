@@ -8,7 +8,8 @@
   :depends-on (curry-compose-reader-macros
                split-sequence
                software-evolution
-               software-evolution-utility)
+               software-evolution-utility
+               trivial-timeout)
   :components ((:file "package")
                (:file "globals")
                (:file "utils")

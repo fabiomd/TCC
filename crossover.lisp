@@ -1,9 +1,18 @@
 (in-package #:wao)
 
 (defun webassembly-crossover (nodeA nodeB)
-	(let ((new-node (apply-crossover nodeA nodeB)))
-		(setf nodeA new-node)
-	)
+	(handler-case
+		(with-timeout *operation-time-limit*
+		  	(progn
+				(let ((new-node (apply-crossover nodeA nodeB)))
+					(setf nodeA new-node)
+				)
+			)
+		)
+		(error (c)
+			(values nodeA c)
+	    )
+    )
 )
 
 (defun apply-crossover (nodeA nodeB)

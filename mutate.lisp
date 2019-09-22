@@ -7,13 +7,22 @@
 (defvar add-chance 0.33)
 
 (defun webassembly-mutate (node)
-	(let ((chances (list swap-chance rm-chance add-chance)))
-		(let ((pos (choose-by-chances chances)))
-			(let ((action (nth pos actions)))
-				(apply-action node action)
-			)
+	(handler-case
+		(with-timeout *operation-time-limit*
+		  	(progn
+				(let ((chances (list swap-chance rm-chance add-chance)))
+					(let ((pos (choose-by-chances chances)))
+						(let ((action (nth pos actions)))
+							(apply-action node action)
+						)
+					)
+				)
+		  	)
 		)
-	)
+		(error (c)
+			(values node c)
+		)
+    )
 )
 
 ; *******************************************************************************************
