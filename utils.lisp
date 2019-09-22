@@ -1,12 +1,16 @@
 (in-package #:wao)
-
-; (setf *random-state* (make-random-state t))
 ; ****************************************************************************************************
 ; FILE UTILS
 ; ****************************************************************************************************
 
 (defun get-wat-file-s-expression (wat-filename)
 	(with-open-file (file wat-filename
+                  :direction :input)
+	  (read file))
+)
+
+(defun get-key (key-filename)
+	(with-open-file (file key-filename
                   :direction :input)
 	  (read file))
 )

@@ -26,7 +26,9 @@
 
 ; CROSSOVER METHOD RECEIVES TWO OBJECTS AND RETURN A NEW ONE
 (defmethod crossover (webassembly-software-A webassembly-software-B)
-	(print "CROSSOVER")
+	(if *crossover-debugger-is-enabled*
+		(print "CROSSOVER")
+	)
 	(let ((code-copy (copy webassembly-software-A)))
 		(let ((module-A (slot-value code-copy 'genome))
 			  (module-B (slot-value webassembly-software-B 'genome)))
@@ -36,7 +38,9 @@
 			    	  (node-B (get-nodes-with-type tempCODE-B 'func-node)))
 			    	(let ((crossover (webassembly-crossover (car choosen-A) (nth (cdr choosen-A) node-B))))
 			    		(progn
-			    			(print (retrieve-code module-A))
+			    			(if *crossover-debugger-is-enabled*
+				    			(print (retrieve-code module-A))
+			    			)
 							code-copy
 						)
 						; (t (error-notification "crossover has failed"))
@@ -51,14 +55,18 @@
 
 ; MUTATE METHOD RECEIVES ONE OBJECT AN RETURN A NEW ONE
 (defmethod mutate (webassembly-software-A)
-	(print "MUTATE")
+	(if *mutation-debugger-is-enabled*
+		(print "MUTATE")
+	)
 	(let ((code-copy (copy webassembly-software-A)))
 		(let ((module (slot-value code-copy 'genome)))
 			(let ((tempCODE (slot-value module 'body)))
 			    (let ((node (car (choose (get-nodes-with-type tempCODE 'func-node)))))
 			    	(let ((mutation (webassembly-mutate node)))
 			    		(progn
-			    			(print (retrieve-code module))
+			    			(if *mutation-debugger-is-enabled*
+				    			(print (retrieve-code module))
+			    			)
 							code-copy
 						)
 						; (t (error-notification "mutation has failed"))
@@ -72,7 +80,9 @@
 ; ****************************************************************************************************
 
 (defun avaliate-code (webassembly-software)
-	(print "FITNESS")
+	(if *fitness-debugger-is-enabled*
+		(print "FITNESS")
+	)
 	(check-data)
 	(with-slots (id genome) webassembly-software
 		(let ((content (retrieve-code genome))
@@ -88,7 +98,9 @@
 				      (if compiled
 						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
 						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size))))
-						  	  	(print final-fitness)
+						  	  	(if *fitness-debugger-is-enabled*
+							  	  	(print final-fitness)
+						  	  	)
 						  	  	(setf (slot-value webassembly-software 'fitness) final-fitness)
 						  	  	final-fitness
 						  	  )
@@ -161,19 +173,26 @@
 (defun webassembly-fitness (test-script webassembly-wasm-path)
 	(let ((result (webassembly-testsuite test-script webassembly-wasm-path)))
 		(let ((test-table (split-sequence:SPLIT-SEQUENCE #\Newline result :remove-empty-subseqs t)))
+			(print "test-table")
+			(print test-table)
 		(let ((fitness 0))
-			(loop for x in test-table do
-				(let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
-					(if (string-equal (car temp) "error")
-						(progn
-						  (if (string-equal (car temp) "true")
-						      (progn 
-								  (error-notification "has failed")
-								  (block nil (return (list (worst) test-table))))))
-						(progn 
-						  (setf fitness (+ fitness (parse-fitness(caddr temp))))))
+			(if test-table
+				(loop for x in test-table do
+					(let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
+						(if (string-equal (car temp) "error")
+							(progn
+							  (if (string-equal (car temp) "true")
+							      (progn 
+									  (error-notification "has failed")
+									  (block nil (return (list (worst) test-table))))))
+							(progn 
+							  (setf fitness (+ fitness (parse-fitness(caddr temp))))
+							)
+						)
 					)
 				)
+				(block nil (return (list (worst) test-table)))
+			)
 		(block nil (return (list fitness test-table)))))))
 
 ; ****************************************************************************************************

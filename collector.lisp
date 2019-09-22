@@ -11,10 +11,37 @@
 
 (defun check-data ()
 	(if (eql (mod *fitness-evals* 100) 0)
-		(collect-experiment-data *fitness-evals*)
+		(progn
+			(let ((best (get-best-element)))
+				(collect-experiment-data best "best" *fitness-evals*)
+			)
+			(let ((worth (get-worth-element)))
+				(collect-experiment-data worth "worth" *fitness-evals*)
+			)
+
+			(if *collector-debugger-is-enabled*
+	  	  		(get-best)
+	  	  	)
+  	  	)
 	)
 	(if (eql *fitness-evals* *max-avaliations*)
-		(get-avaliations)
+		(progn
+			(get-avaliations)
+			(get-randomkey)
+			(if *collector-debugger-is-enabled*
+	  	  		(get-best)
+	  	  	)
+			(print "evolution completed")
+		)
+	)
+)
+; ****************************************************************************************************
+
+(defun get-randomkey()
+	(let ((path "./temp/")
+	    (name "randomKey")
+	    (extension ".txt"))
+	    (add-to-file path name extension (write-to-string *random-state*))
 	)
 )
 
@@ -31,22 +58,20 @@
 
 ; ****************************************************************************************************
 
-(defun collect-experiment-data (executions)
-	(let ((best (get-best-element)))
-	     (let ((best-data (retrieve-data best))
-	     	   (best-plot (retrieve-graph-data best))
-	     	   (path "./temp/")
-	     	   (name "generationData")
-	     	   (graph "generationDataAsPoints")
-	     	   (extension ".txt"))
-	          (let ((content (concatenate 'string (format-data executions) " & " best-data " \\\\ \\n")))
-	          	  (add-to-file path name extension content)
-	          )
-	          (let ((content (concatenate 'string "(" (format-data executions) "," best-plot ")")))
-	          	  (add-to-file path graph extension content)
-	          )
-	     )
-	)
+(defun collect-experiment-data (element name executions)
+     (let ((element-data (retrieve-data element))
+     	   (element-plot (retrieve-graph-data element))
+     	   (path "./temp/")
+     	   (name (concatenate 'string name "GenerationData"))
+     	   (graph (concatenate 'string name "GenerationDataAsPoints"))
+     	   (extension ".txt"))
+          (let ((content (concatenate 'string (format-data executions) " & " element-data " \\\\ \\n")))
+          	  (add-to-file path name extension content)
+          )
+          (let ((content (concatenate 'string "(" (format-data executions) "," element-plot ")")))
+          	  (add-to-file path graph extension content)
+          )
+     )
 )
 
 ; ****************************************************************************************************

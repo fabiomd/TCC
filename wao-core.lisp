@@ -13,13 +13,15 @@
   (error "must specify a positive infinity value"))
 
 (defun config (wasm)
+  (setf *random-state* (get-key "benchmark/randomKey.txt"))
+  ; (setf *random-state* (make-random-state t))
   (progress-notification "creating temp content")
   (ensure-directories-exist *watcode-path*)
   (ensure-directories-exist *wasmcode-path*)
   (done-notification)
   (setf *fitness-shell-path*      "ShellScripts/test.sh"
         *wat-to-wasm-shell-path*  "ShellScripts/wat2wasm.sh"
-        *fitness-js-path*         "benchmark/fitness.js")
+        *fitness-js-path*         "benchmark/fitness/fitnessA.js")
 	(let ((temp (webassembly-fitness *fitness-shell-path* wasm)))
     (let ((genome (get-wat-file-s-expression (concatenate 'string *original-file-path*))))
       (progress-notification "reading original")
@@ -59,7 +61,7 @@
   (setf *original-body-nodes* (code-size *original*))
 )
 
-(setf *original-file-path* "benchmark/original.wat")
+(setf *original-file-path* "benchmark/experiments/expA.wat")
 
 (defun run (wasm)
   (format t "~%")
@@ -72,6 +74,7 @@
 (run "add.wasm")
 
 (defun evolve-code ()
+  (print "evolving ...")
   (evolve #'avaliate-code :max-evals *max-avaliations*) 
 )
 

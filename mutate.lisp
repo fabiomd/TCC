@@ -43,7 +43,7 @@
 							  locals (create-symbols temp-locals)
 						)
 					)
-					(let ((new-body-node (apply-action-body (car chosen) action sub-webassembly-symbols-table)))
+					(let ((new-body-node (apply-action-body (car chosen) action sub-webassembly-symbols-table 0)))
 						(if new-body-node
 							(if (> (length block-params) 0)
 								(setf (nth (cdr chosen) (slot-value body 'body)) new-body-node)
@@ -60,21 +60,28 @@
 
 ; *******************************************************************************************
 
-(defun apply-action-body (node action webassembly-symbols-table)
-	(let ((sub-webassembly-symbols-table (copy-webassembly-symbols-table webassembly-symbols-table))
-		   (sub-nodes (get-node-parameters node)))
-	    (if node
-	    	(let ((expected-return-type (get-node-return-type node webassembly-symbols-table)))
-	    		(set-results sub-webassembly-symbols-table (create-result-symbol-from-type expected-return-type))
-	    	)
-	    )
-	    (if (AND (> (length sub-nodes) 0) (deeper node))
-	    	(let ((chosen (choose sub-nodes)))
-	    		(let ((node-with-action (apply-action-body (car chosen) action sub-webassembly-symbols-table)))
-	    			node-with-action
-	    		)
-	    	)
-	    	(apply-action-node node sub-nodes action sub-webassembly-symbols-table)
+(defun apply-action-body (node action webassembly-symbols-table tree-lvl)
+	(if (eql tree-lvl 20)
+		(let ((chosen (choose sub-nodes)))
+    		(let ((node-with-action (apply-action-body (car chosen) action sub-webassembly-symbols-table (+ tree-lvl 1))))
+    			node-with-action
+    		)
+    	)
+		(let ((sub-webassembly-symbols-table (copy-webassembly-symbols-table webassembly-symbols-table))
+			   (sub-nodes (get-node-parameters node)))
+		    (if node
+		    	(let ((expected-return-type (get-node-return-type node webassembly-symbols-table)))
+		    		(set-results sub-webassembly-symbols-table (create-result-symbol-from-type expected-return-type))
+		    	)
+		    )
+		    (if (AND (> (length sub-nodes) 0) (deeper node))
+		    	(let ((chosen (choose sub-nodes)))
+		    		(let ((node-with-action (apply-action-body (car chosen) action sub-webassembly-symbols-table (+ tree-lvl 1))))
+		    			node-with-action
+		    		)
+		    	)
+		    	(apply-action-node node sub-nodes action sub-webassembly-symbols-table)
+		    )
 	    )
     )
 )

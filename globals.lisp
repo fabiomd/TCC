@@ -25,7 +25,7 @@
 
 ; UTILS VARIABLES
 (defvar *current-step*            0    "current step")
-(defvar *max-avaliations*         9000 "max avaliations")
+(defvar *max-avaliations*         (expt 2 12) "max avaliations")
 
 ; *******************************************************************************************
 (defvar *void-types*              (list "") "webassembly void representation")
@@ -47,3 +47,10 @@
 (defvar *wasmcode-path*           "./temp/wasmcode/" "path to temp .wasm file")
 (defvar *wat-extension*           ".wat"          "wat code extension")
 (defvar *wasm-extension*          ".wasm"         "wasm code extension")
+
+; *******************************************************************************************
+; DEBUGGER VARIABLES
+(defvar *crossover-debugger-is-enabled*    'T "crossover debugged flag")
+(defvar *mutation-debugger-is-enabled*     'T "mmutation debugged flag")
+(defvar *fitness-debugger-is-enabled*      'T "fitness debugged flag")
+(defvar *collector-debugger-is-enabled*    nil "collector debugged flag")
