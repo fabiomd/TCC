@@ -12,9 +12,9 @@
   (error "must specify a positive infinity value"))
 
 (defun config (wasm)
-  (setf *gensym-counter* 0)
-  ; (setf *random-state* (get-key "benchmark/randomKey.txt")
-  ;       *gensym-counter* 0)
+  ; (setf *gensym-counter* 0)
+  (setf *random-state* (get-key "benchmark/randomKey1.txt")
+        *gensym-counter* 0)
   ; (setf *random-state* (make-random-state t))
   (progress-notification "creating temp content")
   (ensure-directories-exist *watcode-path*)

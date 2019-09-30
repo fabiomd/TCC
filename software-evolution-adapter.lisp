@@ -36,12 +36,10 @@
 			    (let ((choosen-A (choose (get-nodes-with-type tempCODE-A 'func-node)))
 			    	  (node-B (get-nodes-with-type tempCODE-B 'func-node)))
 			    	(let ((crossover (webassembly-crossover (car choosen-A) (nth (cdr choosen-A) node-B))))
-			    		(progn
-			    			(if *crossover-debugger-is-enabled*
-				    			(print (retrieve-code module-A))
-			    			)
-							code-copy
-						)
+		    			(if *crossover-debugger-is-enabled*
+			    			(print (retrieve-code module-A))
+		    			)
+						code-copy
 						; (t (error-notification "crossover has failed"))
 					)
 			    )
@@ -62,12 +60,10 @@
 			(let ((tempCODE (slot-value module 'body)))
 			    (let ((node (car (choose (get-nodes-with-type tempCODE 'func-node)))))
 			    	(let ((mutation (webassembly-mutate node)))
-			    		(progn
-			    			(if *mutation-debugger-is-enabled*
-				    			(print (retrieve-code module))
-			    			)
-							code-copy
-						)
+		    			(if *mutation-debugger-is-enabled*
+			    			(print (retrieve-code module))
+		    			)
+						code-copy
 						; (t (error-notification "mutation has failed"))
 					)
 			    )
@@ -83,6 +79,7 @@
 		(print "FITNESS")
 	)
 	(check-data)
+	(check-garbage-collector)
 	(with-slots (id genome) webassembly-software
 		(let ((content (retrieve-code genome))
 			  (size (code-size webassembly-software)))
