@@ -137,7 +137,7 @@
 (defun get-worth-element ()
 	(let ((worth *original*))
 		(loop for individual in *population* do
-			(if (> (slot-value individual 'fitness) (slot-value worth 'fitness))
+			(if (< (slot-value individual 'fitness) (slot-value worth 'fitness))
 				(setf worth individual)
 			)  
         )

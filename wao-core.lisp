@@ -22,7 +22,7 @@
   (done-notification)
   (setf *fitness-shell-path*      "ShellScripts/test.sh"
         *wat-to-wasm-shell-path*  "ShellScripts/wat2wasm.sh"
-        *fitness-js-path*         "benchmark/fitness/fitnessA.js")
+        *fitness-js-path*         "benchmark/fitness/fitnessB.js")
 	(let ((temp (webassembly-fitness *fitness-shell-path* wasm)))
     (let ((genome (get-wat-file-s-expression (concatenate 'string *original-file-path*))))
       (progress-notification "reading original")
@@ -62,7 +62,7 @@
   (setf *original-body-nodes* (code-size *original*))
 )
 
-(setf *original-file-path* "benchmark/experiments/expA.wat")
+(setf *original-file-path* "benchmark/experiments/expB.wat")
 
 (defun run (wasm)
   (format t "~%")

@@ -25,7 +25,7 @@
 
 ; UTILS VARIABLES
 (defvar *current-step*            0    "current step")
-(defvar *max-avaliations*         (expt 2 12) "max avaliations")
+(defvar *max-avaliations*         (expt 2 10) "max avaliations")
 
 ; *******************************************************************************************
 (defvar *void-types*              (list "") "webassembly void representation")
