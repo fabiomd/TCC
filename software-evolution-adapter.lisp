@@ -101,7 +101,7 @@
 						  	  	final-fitness
 						  	  )
 					      )
-					      worst
+					      (worst)
 				      )
 			      )
 		      )
@@ -162,6 +162,27 @@
     )
 )
 
+(defun compile-original-wat-to-wasm ()
+	(handler-case
+		(with-timeout *operation-time-limit*
+		  	(progn
+				(let ((compiler-output-stream (make-string-output-stream))
+					  (wat-path *original-file-path*)
+					  (wasm-path *compiled-original-file-path*))
+				    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
+											:output compiler-output-stream
+											:error :output 
+											:error-output 
+										  	:lines :ignore-error-status t)
+				    (let ((result (get-output-stream-string compiler-output-stream)))
+					    (block nil (return result))))
+			)
+		)
+		(error (c)
+			(values 0 c)
+		)
+    )
+)
 ; CALL THE TEST SHELL SCRIPT AND RECEIVES IT OUTPUT
 (defun webassembly-testsuite (test-script webassembly-wasm-path)
 	(let ((fitness-output-stream (make-string-output-stream)))
