@@ -93,7 +93,7 @@
 				; CALCULATE THE FITNESS
 				      (if compiled
 						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
-						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size))))
+						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size) (retrieve-variables-use-bonus webassembly-software))))
 						  	  	(if *fitness-debugger-is-enabled*
 							  	  	(print final-fitness)
 						  	  	)
@@ -131,6 +131,27 @@
 	            )
 	        )
 	        counter
+	    )
+    )
+)
+
+(defun retrieve-variables-use-bonus (webassembly-software)
+	(let ((code-module (slot-value webassembly-software 'genome)))
+	    (let ((tempCODE (slot-value code-module 'body))
+	    	(variables-use-bonus 0))
+	        (loop for func in (get-nodes-with-type tempCODE 'func-node) do
+	            (let ((func-variable-ids (get-func-parameters-id func))
+	            	(body (slot-value func 'body))
+	            	(temp-variables '()))
+	            	(setf temp-variables (append temp-variables (retrieve-body-variables-ids (list body))))
+	            	(loop for func-variable-id in func-variable-ids do
+	            		(if (find func-variable-id temp-variables)
+	            			(setf variables-use-bonus (+ variables-use-bonus 0.005))
+	            		)
+	            	)
+	            )
+	        )
+	        variables-use-bonus
 	    )
     )
 )

@@ -86,13 +86,13 @@
 
 ; ****************************************************************************************************
 
-(defun set-loop-return-type ()
+(defun get-loop-return-type ()
 	(car *void-types*)
 )
 
 ; ****************************************************************************************************
 
-(defun set-loop-parameters (node)
+(defun get-loop-parameters (node)
 	(with-slots (operator parameters breakCondition breakLoop) node
 		(let ((temp-parameters '()))
 			(let ((temp-parameters '()))

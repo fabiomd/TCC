@@ -44,3 +44,9 @@
 (defun get-param-type (node)
 	(slot-value node 'typeop)
 )
+
+; ****************************************************************************************************
+
+(defun get-param-id (node)
+	(slot-value node 'name)
+)

@@ -50,6 +50,21 @@
 
 ; ****************************************************************************************************
 
+(defun get-func-parameters-id (node)
+	(let ((parameters-ids '()))
+		(with-slots (signature) node
+			(loop for item in signature do
+				(if (eql (type-of item) 'param)
+					(setf parameters-ids (append parameters-ids (list (get-param-id item))))
+				)
+		    )
+		    parameters-ids
+	    )
+	)
+)
+
+; ****************************************************************************************************
+
 (defun get-func-name (node)
 	(slot-value node 'name)
 )

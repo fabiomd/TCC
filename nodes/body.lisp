@@ -199,6 +199,8 @@
 	       	   (get-break-parameters node))
 	      ((eql (type-of node) 'block-node)
 	      	   (get-block-parameters node))
+	      ((eql (type-of node) 'multiple-node)
+	      	   (get-multiple-parameters node))
 		  (t '())
     )
 )
@@ -236,6 +238,18 @@
     )
 )
 
+(defun retrieve-body-variables-ids (nodes)
+	(let ((temp-variable-ids '()))
+		(loop for node in nodes do
+			(cond ((eql (type-of node) 'get-local-node)
+				       (setf temp-variable-ids (append temp-variable-ids (list (get-local-id node)))))
+			      (t (let ((subnodes (get-node-parameters node)))
+			      	   (setf temp-variable-ids (append temp-variable-ids (retrieve-body-variables-ids subnodes)))
+			      	)))
+		)
+		temp-variable-ids
+	)
+)
 
 (defun count-body-nodes (nodes)
 	(if (listp nodes)

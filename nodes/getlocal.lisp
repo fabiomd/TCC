@@ -60,6 +60,12 @@
 
 ; ****************************************************************************************************
 
+(defun get-local-id (node)
+	(slot-value node 'name)
+)
+
+; ****************************************************************************************************
+
 (defun get-local-return-type (node webassembly-symbol-table)
 	(get-type-from-name (slot-value node 'name) webassembly-symbol-table)
 )
