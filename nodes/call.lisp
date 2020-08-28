@@ -14,10 +14,8 @@
 		(loop for param in (cddr wat-code) do
 			(setf temp-parameters (append temp-parameters (expand-body (list param))))
 		)
-		(setf (slot-value call-node 'parameters) temp-parameters)
-		set-local-node
+		call-node
 	)
-	call-node
 )
 
 ; ****************************************************************************************************

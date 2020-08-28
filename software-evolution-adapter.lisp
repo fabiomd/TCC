@@ -93,7 +93,7 @@
 				; CALCULATE THE FITNESS
 				      (if compiled
 						  (let ((fitness (webassembly-fitness *fitness-shell-path* wasmfilepath)))
-						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size))))
+						  	  (let ((final-fitness (+ (car fitness) (fitness-size-bonus size) (retrieve-variables-use-bonus webassembly-software))))
 						  	  	(if *fitness-debugger-is-enabled*
 							  	  	(print final-fitness)
 						  	  	)
@@ -101,7 +101,7 @@
 						  	  	final-fitness
 						  	  )
 					      )
-					      worst
+					      (worst)
 				      )
 			      )
 		      )
@@ -135,6 +135,27 @@
     )
 )
 
+(defun retrieve-variables-use-bonus (webassembly-software)
+	(let ((code-module (slot-value webassembly-software 'genome)))
+	    (let ((tempCODE (slot-value code-module 'body))
+	    	(variables-use-bonus 0))
+	        (loop for func in (get-nodes-with-type tempCODE 'func-node) do
+	            (let ((func-variable-ids (get-func-parameters-id func))
+	            	(body (slot-value func 'body))
+	            	(temp-variables '()))
+	            	(setf temp-variables (append temp-variables (retrieve-body-variables-ids (list body))))
+	            	(loop for func-variable-id in func-variable-ids do
+	            		(if (find func-variable-id temp-variables)
+	            			(setf variables-use-bonus (+ variables-use-bonus 0.005))
+	            		)
+	            	)
+	            )
+	        )
+	        variables-use-bonus
+	    )
+    )
+)
+
 ; ****************************************************************************************************
 ; SHELL SCRIPTS
 ; ****************************************************************************************************
@@ -162,6 +183,27 @@
     )
 )
 
+(defun compile-original-wat-to-wasm ()
+	(handler-case
+		(with-timeout *operation-time-limit*
+		  	(progn
+				(let ((compiler-output-stream (make-string-output-stream))
+					  (wat-path *original-file-path*)
+					  (wasm-path *compiled-original-file-path*))
+				    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
+											:output compiler-output-stream
+											:error :output 
+											:error-output 
+										  	:lines :ignore-error-status t)
+				    (let ((result (get-output-stream-string compiler-output-stream)))
+					    (block nil (return result))))
+			)
+		)
+		(error (c)
+			(values 0 c)
+		)
+    )
+)
 ; CALL THE TEST SHELL SCRIPT AND RECEIVES IT OUTPUT
 (defun webassembly-testsuite (test-script webassembly-wasm-path)
 	(let ((fitness-output-stream (make-string-output-stream)))

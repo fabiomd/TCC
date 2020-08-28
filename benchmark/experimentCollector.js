@@ -7,39 +7,33 @@ let worstIntResult = 0;
 
 // create all instances
 async.parallel({
-    multwo: function(parallelCb) {
-        getInstance(arrayBuffer,function(err,callback) {
+    sumtwo: function(parallelCb) {
+        getInstance(arrayBuffer,function(err,callback){
             parallelCb(err, {err: err, instance: callback});
         });
     }
 }, function(err, results) {
     async.parallel({
-        multwo: function(parallelCb) {
-            var timer;
+        sumtwo: function(parallelCb) {
             try {
-                let numberOfTest = 5;
+                let numberOfTest = 3;
                 var testResults = [];
-                timer = setInterval(function() {
-                    throw new UserException("Function Timeout");
-                }, numberOfTest * 1000);
                 for (var i=0; i < numberOfTest; i++ ) {
                     let firstNumber  = getRandomInt(-100,100);
                     let secondNumber = getRandomInt(-100,100);
-                    let expectedResult = firstNumber * secondNumber;
-                    let webAssemblyAddFuncResult = results.multwo.instance.exports.multwo(firstNumber,secondNumber);
+                    let expectedResult = firstNumber + secondNumber;
+                    let webAssemblyAddFuncResult = results.sumtwo.instance.exports.sumtwo(firstNumber,secondNumber);
                     let testResult = { 
                         gotten: webAssemblyAddFuncResult, 
                         expected: expectedResult
                     };
                     testResults.push(testResult);
                 }
-                clearInterval(timer);
                 parallelCb(null, {
                     err: false,
                     results: testResults
                 });
             } catch(error) {
-                clearInterval(timer);
                 parallelCb(error, {
                     err: true, 
                     results: [{ 
@@ -51,7 +45,7 @@ async.parallel({
         }
     }, function(errOfIntances, resultsOfIntances) {
         console.log("error : " + (errOfIntances ? true : false));
-        console.log("multwo : " + accuracyOfIntanceIntOrFloat(resultsOfIntances.multwo));
+        console.log("sumtwo : " + accuracyOfIntanceIntOrFloat(resultsOfIntances.sumtwo));
     });
 });
 

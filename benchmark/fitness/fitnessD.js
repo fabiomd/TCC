@@ -7,14 +7,14 @@ let worstIntResult = 0;
 
 // create all instances
 async.parallel({
-    multwo: function(parallelCb) {
-        getInstance(arrayBuffer,function(err,callback) {
+    increment: function(parallelCb) {
+        getInstance(arrayBuffer,function(err,callback){
             parallelCb(err, {err: err, instance: callback});
         });
     }
 }, function(err, results) {
     async.parallel({
-        multwo: function(parallelCb) {
+        increment: function(parallelCb) {
             var timer;
             try {
                 let numberOfTest = 5;
@@ -23,12 +23,18 @@ async.parallel({
                     throw new UserException("Function Timeout");
                 }, numberOfTest * 1000);
                 for (var i=0; i < numberOfTest; i++ ) {
-                    let firstNumber  = getRandomInt(-100,100);
-                    let secondNumber = getRandomInt(-100,100);
-                    let expectedResult = firstNumber * secondNumber;
-                    let webAssemblyAddFuncResult = results.multwo.instance.exports.multwo(firstNumber,secondNumber);
+                    var firstNumber  = getRandomInt(1,100);
+                    let secondNumber = 1;
+                    var thirdNumber  = getRandomInt(1,100);
+                    if (firstNumber > thirdNumber) {
+                       let temp = firstNumber;
+                       firstNumber = thirdNumber;
+                       thirdNumber = temp;
+                    }
+                    let expectedResult = firstNumber + (secondNumber * thirdNumber);
+                    let webAssemblyIncrementFuncResult = results.increment.instance.exports.increment(firstNumber,secondNumber,thirdNumber);
                     let testResult = { 
-                        gotten: webAssemblyAddFuncResult, 
+                        gotten: webAssemblyIncrementFuncResult, 
                         expected: expectedResult
                     };
                     testResults.push(testResult);
@@ -50,8 +56,9 @@ async.parallel({
             }
         }
     }, function(errOfIntances, resultsOfIntances) {
+        let functionAccurence = accuracyOfIntanceIntOrFloat(resultsOfIntances.increment);
         console.log("error : " + (errOfIntances ? true : false));
-        console.log("multwo : " + accuracyOfIntanceIntOrFloat(resultsOfIntances.multwo));
+        console.log("increment : " + functionAccurence);
     });
 });
 

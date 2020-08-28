@@ -72,16 +72,26 @@
                                                                      "nodes/signature"))
                (:file "nodes/local"                     :depends-on ("utils" 
                                                                      "nodes/signature"))
+               (:file "nodes/multiple"                  :depends-on ("utils" 
+                                                                     "nodes/signature"))
                (:file "nodes/func"                      :depends-on ("utils" 
                                                                      "nodes/generic" 
                                                                      "nodes/signature" 
                                                                      "nodes/body"
-                                                                     "nodes/block"))
+                                                                     "nodes/multiple"))
                (:file "nodes/call"                      :depends-on ("utils" 
                                                                      "nodes/func" 
                                                                      "nodes/body"
                                                                      "adapt"
                                                                      "webassembly-symbols-table"))
+               (:file "nodes/break"                     :depends-on ("utils" 
+                                                                     "nodes/generic"))
+               (:file "nodes/breakIf"                   :depends-on ("utils" 
+                                                                     "nodes/generic"))
+               (:file "nodes/loop"                      :depends-on ("utils" 
+                                                                     "nodes/generic"
+                                                                     "nodes/break"
+                                                                     "nodes/breakIf"))
                (:file "expand"                          :depends-on ("utils" 
                                                                      "nodes/generic"))
                (:file "retrieve"                        :depends-on ("utils" 

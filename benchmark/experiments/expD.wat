@@ -5,11 +5,15 @@
   (export "increment" (func $increment))
   (func $increment (param $0 i32) (param $1 i32) (param $2 i32) (result i32)
     (local $3 i32)
+    (local $4 i32)
     (set_local $3 (get_local $0))
-    (loop
-       (set_local $3 (i32.add (get_local $3) (get_local $2)))
-       (br_if 1 (i32.eq (get_local $3) (get_local $1)))
-       (br 0)
+    (set_local $4 (i32.add (get_local $0) (get_local $2)))
+    (block
+       (loop
+          (set_local $3 (i32.add (get_local $1) (get_local $3)))
+          (br_if 1 (i32.eq (get_local $3) (get_local $4)))
+          (br 0)
+       )
     )
     (get_local $3)
   )
