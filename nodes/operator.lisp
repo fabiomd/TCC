@@ -130,13 +130,6 @@
 )
 
 (defun get-operator-parameters (node)
-	; (let ((parameters-node '()))
-	; 	(loop for parameter in (slot-value node 'parameters) do
-	; 		(setf parameters-node (append parameters-node parameter))
-	; 	)
-	; 	parameters-node
-	; 	; (slot-value node 'parameters)
-	; )
 	(slot-value node 'parameters)
 )
 
@@ -146,8 +139,5 @@
 			(setf parameters-node (append parameters-node parameter))
 		)
 		parameters-node
-		; (let ((choosen (choose parameters-node)))
-		; 	(cdr choosen)
-		; )
 	)
 )

@@ -1,8 +1,8 @@
 (in-package #:wao)
 
 (defclass set-local-node (node)
-  ((operator  :initarg :operator  :accessor operator  :initform 'SET_LOCAL)
-   (name      :initarg :name      :accessor name      :initform nil)
+  ((operator    :initarg :operator    :accessor operator  :initform 'SET_LOCAL)
+   (name        :initarg :name        :accessor name      :initform nil)
    (parameters  :initarg :parameters  :accessor parameters  :initform nil)))
 
 ; ****************************************************************************************************

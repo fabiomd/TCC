@@ -13,7 +13,7 @@
 
 (defun config ()
   ; (setf *gensym-counter* 0)
-  (setf *random-state* (get-key "benchmark/randomKey1.txt")
+  (setf *random-state* (get-key "benchmark/randomKey5.txt")
         *gensym-counter* 0)
   ; (setf *random-state* (make-random-state t))
   (progress-notification "creating temp content")
