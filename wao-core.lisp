@@ -14,25 +14,26 @@
 (defun config ()
   ; (setf *gensym-counter* 0)
   (setf *random-state* (get-key "benchmark/randomKey5.txt")
-        *gensym-counter* 0)
+        *gensym-counter* 0
+		sb-impl::*default-external-format* :UTF-8)
   ; (setf *random-state* (make-random-state t))
   (progress-notification "creating temp content")
   (ensure-directories-exist *watcode-path*)
   (ensure-directories-exist *wasmcode-path*)
   (done-notification)
-  (setf *fitness-shell-path*      "ShellScripts/test.sh"
-        *wat-to-wasm-shell-path*  "ShellScripts/wat2wasm.sh"
-        *fitness-js-path*         "benchmark/fitness/fitnessD.js")
-	(let ((compiled-original (compile-original-wat-to-wasm))
-    (temp (webassembly-fitness *fitness-shell-path* *compiled-original-file-path*)))
+  (setf *fitness-shell-path*      "./ShellScripts/test.sh"
+        *wat-to-wasm-shell-path*  "./ShellScripts/wat2wasm.sh"
+        *fitness-js-path*         "./TCC/benchmark/fitness/fitnessA.js")
+  (let ((compiled-original (compile-original-wat-to-wasm))
+         (temp (webassembly-fitness *fitness-shell-path* *compiled-original-file-path*)))
     (let ((genome (get-wat-file-s-expression (concatenate 'string *original-file-path*))))
       (progress-notification "reading original")
       (let ((genome-dependecy-graph (generate-dependecy-graph genome)))
-        (setf *original* (make-instance 'webassembly-software
+          (setf *original* (make-instance 'webassembly-software
                     	      :fitness (car temp)
                     	      :testtable (cadr temp)
                     	      :genome genome-dependecy-graph))
-      )
+       )
       (done-notification)
       (progress-notification "processing functions")
       (let ((module (slot-value *original* 'genome)))
@@ -63,8 +64,8 @@
   (setf *original-body-nodes* (code-size *original*))
 )
 
-(setf *original-file-path* "./benchmark/experiments/expD.wat")
-(setf *compiled-original-file-path* "./benchmark/experiments/original.wasm")
+(setf *original-file-path* "benchmark/experiments/expA.wat")
+(setf *compiled-original-file-path* "./TCC/benchmark/experiments/original.wasm")
 
 (config)
 

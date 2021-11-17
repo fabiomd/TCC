@@ -1,7 +1,6 @@
 (defpackage #:wao
-	(:use #:common-lisp
-		  #:alexandria
-	      #:curry-compose-reader-macros
-	      #:split-sequence
-	      #:software-evolution
-	      #:software-evolution-utility))
+	(:use :common-lisp
+		  :alexandria
+	      :curry-compose-reader-macros
+	      :split-sequence
+		  :software-evolution-library))

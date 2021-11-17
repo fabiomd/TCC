@@ -45,6 +45,7 @@
 
 (defvar *watcode-path*            "./temp/watcode/" "path to temp .wat file")
 (defvar *wasmcode-path*           "./temp/wasmcode/" "path to temp .wasm file")
+(defvar *wasmcode-path-two*       "./TCC/temp/wasmcode/" "path to temp .wasm file")
 (defvar *wat-extension*           ".wat"          "wat code extension")
 (defvar *wasm-extension*          ".wasm"         "wasm code extension")
 

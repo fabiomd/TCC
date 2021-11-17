@@ -2,7 +2,6 @@ const fs = require( 'fs' ),
       buffer = fs.readFileSync(process.argv[2]),
       arrayBuffer = new Uint8Array( buffer ).buffer,
       async = require('async');
-
 let worstIntResult = 0;
 
 // create all instances
