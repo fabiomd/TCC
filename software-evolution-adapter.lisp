@@ -3,6 +3,10 @@
 ; SOFTWARE EVOLUTION METHODS
 ; ****************************************************************************************************
 
+(defmethod enable-curry-compose-reader-macros ()
+   nil
+)
+
 ; WEBASSEMBLY SOFTWARE OBJECT
 (defclass webassembly-software (software)
   ((fitness   :initarg :fitness   :accessor fitness   :initform 0)
@@ -14,7 +18,7 @@
 ; ****************************************************************************************************
 
  ; COPY METHOD RECEIVES A SOFTWARE AND CREATE A COPY OF IT
-(defmethod copy ((webassembly webassembly-software))
+(defmethod copy ((webassembly webassembly-software) &key &allow-other-keys)
   (with-slots (fitness testtable genome) webassembly
     (make-instance (type-of webassembly)
       :fitness fitness
@@ -87,7 +91,10 @@
 			(let ((file (save-file *watcode-path* (write-to-string id) *wat-extension* content)))
 			; GET GENERATED CODE PATH
 			  (let ((filepath (concatenate 'string *watcode-path* (write-to-string id) *wat-extension*))
-			  	    (wasmfilepath (concatenate 'string *wasmcode-path* (write-to-string id) *wasm-extension*)))
+			  	    (wasmfilepath (concatenate 'string *wasmcode-path-two* (write-to-string id) *wasm-extension*)))
+					(print *watcode-path*)
+					(print filepath)
+					(print wasmfilepath)
 			  ; COMPILE WAT CODE
 				  (let ((compiled (compile-wat-to-wasm (write-to-string id))))
 				; CALCULATE THE FITNESS
@@ -166,8 +173,9 @@
 		(with-timeout *operation-time-limit*
 		  	(progn
 				(let ((compiler-output-stream (make-string-output-stream))
-					  (wat-path (concatenate 'string "." *watcode-path* webassembly-code-id *wat-extension*))
-					  (wasm-path (concatenate 'string "." *wasmcode-path* webassembly-code-id *wasm-extension*)))
+					  (wat-path (concatenate 'string *watcode-path* webassembly-code-id *wat-extension*))
+					  (wasm-path (concatenate 'string *wasmcode-path* webassembly-code-id *wasm-extension*)))
+					  ;(print (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path))
 				    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
 											:output compiler-output-stream
 											:error :output 
@@ -190,6 +198,7 @@
 				(let ((compiler-output-stream (make-string-output-stream))
 					  (wat-path *original-file-path*)
 					  (wasm-path *compiled-original-file-path*))
+					  ; (print (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path))
 				    (uiop:run-program  (concatenate 'string "sh " *wat-to-wasm-shell-path* " " wat-path " " wasm-path) 
 											:output compiler-output-stream
 											:error :output 
@@ -207,7 +216,8 @@
 ; CALL THE TEST SHELL SCRIPT AND RECEIVES IT OUTPUT
 (defun webassembly-testsuite (test-script webassembly-wasm-path)
 	(let ((fitness-output-stream (make-string-output-stream)))
-	    (uiop:run-program  (concatenate 'string "sh ./" test-script " ./" *fitness-js-path* " " webassembly-wasm-path) 
+	     (print (concatenate 'string "sh " test-script " " *fitness-js-path* " " webassembly-wasm-path))
+	    (uiop:run-program  (concatenate 'string "sh " test-script " " *fitness-js-path* " " webassembly-wasm-path) 
 								:output fitness-output-stream
 								:error :output 
 								:error-output 
@@ -223,6 +233,7 @@
 		(let ((fitness 0))
 			(if test-table
 				(progn
+				    (print test-table)
 					(loop for x in test-table do
 						(let ((temp (split-sequence:SPLIT-SEQUENCE #\space x :remove-empty-subseqs t)))
 							(if (string-equal (car temp) "error")

@@ -12,19 +12,22 @@
 
 (defun get-wat-file-s-expression (wat-filename)
 	(with-open-file (file wat-filename
+	              :external-format :UTF-8
                   :direction :input)
 	  (read file))
 )
 
 (defun get-key (key-filename)
 	(with-open-file (file key-filename
+	              :external-format :UTF-8
                   :direction :input)
 	  (read file))
 )
 
 (defun save-file (path name extension content)
 	(let ((file-path (concatenate 'string path name extension)))
-		(with-open-file (stream file-path 
+		(with-open-file (stream file-path
+		                        :external-format :UTF-8
 			                    :direction :output
 	                            :if-does-not-exist :create
 	                            :if-exists :overwrite)
@@ -34,7 +37,8 @@
 
 (defun add-to-file (path name extension content)
 	(let ((file-path (concatenate 'string path name extension)))
-		(with-open-file (stream file-path 
+		(with-open-file (stream file-path
+		                        :external-format :UTF-8
 			                    :direction :output
 	                            :if-does-not-exist :create
 	                            :if-exists :append)

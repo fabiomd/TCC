@@ -7,8 +7,7 @@
   :serial t
   :depends-on (curry-compose-reader-macros
                split-sequence
-               software-evolution
-               software-evolution-utility
+               software-evolution-library
                trivial-timeout)
   :components ((:file "package")
                (:file "globals")
